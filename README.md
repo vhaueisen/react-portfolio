@@ -1,73 +1,66 @@
-# React + TypeScript + Vite
+# Vitor Ruas — Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Personal portfolio website for **Vitor Haueisen Costa Ruas**, Senior Mobile Engineer (React Native). Features an interactive 3D scene, animated sections, and a full overview of experience, skills, and projects.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+| Layer | Technology |
+|---|---|
+| Framework | React 19 + TypeScript |
+| Build tool | Vite 7 |
+| 3D / WebGL | Three.js, React Three Fiber, Drei, Postprocessing |
+| Animations | Framer Motion |
+| Styling | Tailwind CSS v4 |
+| Icons | React Icons |
+| Linting | ESLint + typescript-eslint |
 
-## React Compiler
+## Project Structure
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+src/
+├── components/
+│   ├── Navbar.tsx          # Top navigation bar
+│   └── SpaceBackground.tsx # Animated starfield canvas
+└── sections/
+    ├── Hero.tsx            # Landing section with 3D astronaut model
+    ├── About.tsx           # Brief personal introduction
+    ├── Experience.tsx      # Work history timeline
+    ├── Skills.tsx          # Technical skills breakdown
+    ├── Projects.tsx        # Featured project cards
+    └── Contact.tsx         # Contact form / links
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Getting Started
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Prerequisites
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- Node.js 18+
+- npm / yarn / pnpm
+
+### Install & Run
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server (http://localhost:5173)
+npm run dev
+
+# Type-check and build for production
+npm run build
+
+# Preview the production build locally
+npm run preview
 ```
+
+### Lint
+
+```bash
+npm run lint
+```
+
+## Contact
+
+- Email: vitorhaueisen@gmail.com
+- LinkedIn: [linkedin.com/in/vitor-ruas](https://linkedin.com/in/vitor-ruas)
+- GitHub: [github.com/vhaueisen](https://github.com/vhaueisen)
