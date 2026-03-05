@@ -6,6 +6,31 @@ React 19 · TypeScript 5 · Vite 7 · Framer Motion 12 · Three.js 0.183 (`@reac
 
 ---
 
+## Formatting (Prettier)
+
+All code must be formatted with Prettier before committing. Run `npm run format`.
+
+```json
+{
+  "singleQuote": true,
+  "semi": false,
+  "tabWidth": 2,
+  "trailingComma": "es5",
+  "printWidth": 100,
+  "bracketSameLine": false,
+  "arrowParens": "always"
+}
+```
+
+- **2-space indent** everywhere — no tabs.
+- **Single quotes** for strings in TS/TSX; double quotes in JSX attribute values only when the string itself contains a single quote.
+- **No semicolons.**
+- **Trailing commas** on multi-line object/array/function-param lists (`es5` mode — no trailing comma in function type parameters).
+- **100-character print width** — Prettier wraps beyond this.
+- All edits must produce a clean `prettier --check` diff (i.e. the formatter changes nothing after your edit).
+
+---
+
 ## Directory structure
 
 ```
@@ -15,6 +40,7 @@ src/
 ├── styles/         # Reusable CSSProperties objects for compound styles
 ├── data/           # Typed domain data arrays (experience, projects, skills…)
 ├── hooks/          # Custom React hooks — one concern per file
+├── context/        # React context providers, reducers, and consumer hooks
 ├── components/
 │   ├── ui/         # Generic, reusable presentational components
 │   └── three/      # WebGL / Three.js components (require an R3F Canvas context)
@@ -34,6 +60,27 @@ src/
 - Never reference the `React` namespace (e.g. `React.ReactNode`, `React.CSSProperties`) — always use named imports: `import type { ReactNode, CSSProperties } from 'react'`.
 - Use `useRef<T | null>(null)` — not `useRef<T>(null!)`. The non-null assertion contradicts the `if (ref.current)` guard that is required in `useFrame` and `useEffect`. Be consistent: assert non-null only when the element is guaranteed to exist before any access.
 - Guard `document.getElementById` calls with an explicit error: `if (!el) throw new Error('...')`. Silent `!` assertions hide missing DOM elements.
+- Props interfaces for sub-components defined inside a section file must be named and declared immediately above the function — not as anonymous inline intersection types.
+
+---
+
+## Branded color type (`CSSColor`)
+
+`src/constants/colors.ts` exports:
+
+```ts
+export type CSSColor = string & { readonly __brand: 'CSSColor' }
+export const css = (v: string): CSSColor => v as CSSColor
+```
+
+- **Every** field typed as a CSS color in any `interface` (e.g. `ExperienceItem.color`, `ProjectItem.color`, `SkillGroup.color`, `StoreLink.bg`, `ContactLink.color`) must use `CSSColor`, not bare `string`.
+- Use `COLORS.*` tokens wherever the value matches an existing token.
+- Use `css()` for computed alpha variants that cannot be expressed as a direct token:
+  ```ts
+  bg: css('rgba(52,211,153,0.08)')
+  ```
+- Never write raw hex or rgba strings in data files or components — the branded type will reject them at compile time.
+- When adding new recurring color values, first consider adding a named token to `COLORS` in `src/constants/colors.ts` **and** a matching `--color-*` custom property in the `@theme` block of `src/index.css` so both layers stay in sync.
 
 ---
 
