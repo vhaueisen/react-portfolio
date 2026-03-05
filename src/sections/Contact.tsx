@@ -3,7 +3,7 @@ import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import { motion } from 'framer-motion'
 import { FiArrowRight } from 'react-icons/fi'
 import { WireframeSphere } from '../components/three'
-import { SectionHeading, AnimatedEntrance } from '../components/ui'
+import { SectionHeading, AnimatedEntrance, CanvasErrorBoundary } from '../components/ui'
 import { COLORS } from '../constants/colors'
 import { CONTACT_LINKS } from '../data/contact'
 import { useSectionInView } from '../hooks/useSectionInView'
@@ -134,20 +134,22 @@ export default function Contact() {
                     transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
                     style={{ height: '360px', width: '100%' }}
                 >
-                    <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
-                        <ambientLight intensity={0.2} />
-                        <pointLight position={[4, 4, 4]} color={COLORS.indigo} intensity={2} />
-                        <pointLight position={[-4, -4, 2]} color={COLORS.cyan} intensity={1} />
-                        <WireframeSphere />
-                        <EffectComposer>
-                            <Bloom
-                                intensity={0.8}
-                                luminanceThreshold={0.05}
-                                luminanceSmoothing={0.9}
-                                mipmapBlur
-                            />
-                        </EffectComposer>
-                    </Canvas>
+                    <CanvasErrorBoundary>
+                        <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
+                            <ambientLight intensity={0.2} />
+                            <pointLight position={[4, 4, 4]} color={COLORS.indigo} intensity={2} />
+                            <pointLight position={[-4, -4, 2]} color={COLORS.cyan} intensity={1} />
+                            <WireframeSphere />
+                            <EffectComposer>
+                                <Bloom
+                                    intensity={0.8}
+                                    luminanceThreshold={0.05}
+                                    luminanceSmoothing={0.9}
+                                    mipmapBlur
+                                />
+                            </EffectComposer>
+                        </Canvas>
+                    </CanvasErrorBoundary>
                 </motion.div>
             </div>
 

@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { Suspense } from 'react'
 import { FiArrowDown, FiGithub, FiLinkedin } from 'react-icons/fi'
 import { AstronautModel, ModelFallback } from '../components/three'
-import { SocialIconLink, AnimatedEntrance } from '../components/ui'
+import { SocialIconLink, AnimatedEntrance, CanvasErrorBoundary } from '../components/ui'
 import { COLORS } from '../constants/colors'
 import { CONTACT_LINKS } from '../data/contact'
 import { gradientTextShort } from '../styles'
@@ -99,7 +99,7 @@ export default function Hero() {
                 >
                     {NAME_CHARS.map((char, i) => (
                         <motion.span
-                            key={i}
+                            key={`${char}-${i}`}
                             variants={charVariants}
                             style={{
                                 display: 'inline-block',
@@ -196,20 +196,22 @@ export default function Hero() {
                     pointerEvents: 'none',
                 }}
             >
-                <Canvas camera={{ position: [0, 0, 5], fov: 55 }} shadows>
-                    <ambientLight intensity={0.2} />
-                    <directionalLight position={[5, 8, 5]} intensity={0.5} castShadow />
-                    <pointLight position={[-2, 2, 3]} color="#a855f7" intensity={8} />
-                    <pointLight position={[3, -2, -2]} color="#22d3ee" intensity={3} />
-                    <pointLight position={[0, 5, 2]} color="#c084fc" intensity={4} />
-                    <Environment preset="city" />
-                    <Suspense fallback={<ModelFallback />}>
-                        <AstronautModel />
-                    </Suspense>
-                    <EffectComposer>
-                        <Bloom intensity={0.5} luminanceThreshold={0.3} luminanceSmoothing={0.9} mipmapBlur />
-                    </EffectComposer>
-                </Canvas>
+                <CanvasErrorBoundary>
+                    <Canvas camera={{ position: [0, 0, 5], fov: 55 }} shadows>
+                        <ambientLight intensity={0.2} />
+                        <directionalLight position={[5, 8, 5]} intensity={0.5} castShadow />
+                        <pointLight position={[-2, 2, 3]} color="#a855f7" intensity={8} />
+                        <pointLight position={[3, -2, -2]} color="#22d3ee" intensity={3} />
+                        <pointLight position={[0, 5, 2]} color="#c084fc" intensity={4} />
+                        <Environment preset="city" />
+                        <Suspense fallback={<ModelFallback />}>
+                            <AstronautModel />
+                        </Suspense>
+                        <EffectComposer>
+                            <Bloom intensity={0.5} luminanceThreshold={0.3} luminanceSmoothing={0.9} mipmapBlur />
+                        </EffectComposer>
+                    </Canvas>
+                </CanvasErrorBoundary>
             </motion.div>
         </section>
     )

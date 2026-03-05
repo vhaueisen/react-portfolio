@@ -140,6 +140,22 @@ section {
     transform: translateY(-2px);
 }
 
+/* ─── Navbar link & button hover states ─────────────────────────────────────── */
+/* Hover colors reference @theme tokens so they stay in sync with COLORS. */
+
+.nav-link:hover {
+    color: var(--color-text-primary) !important;
+}
+
+.nav-mobile-link:hover {
+    color: var(--color-text-primary) !important;
+}
+
+.nav-resume-btn:hover {
+    background: rgba(99, 102, 241, 0.1) !important;
+    border-color: var(--color-accent-indigo) !important;
+}
+
 /* ─── Navbar responsive visibility ──────────────────────────────────────────── */
 
 .nav-desktop {

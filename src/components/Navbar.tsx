@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
 import { COLORS } from '../constants/colors'
 import { NAV_LINKS, RESUME_URL } from '../constants/navigation'
@@ -43,7 +43,11 @@ export default function Navbar() {
         >
             {/* Logo */}
             <a
-                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                href="#hero"
+                onClick={(e) => {
+                    e.preventDefault()
+                    window.scrollTo({ top: 0, behavior: 'smooth' })
+                }}
                 style={{
                     cursor: 'pointer',
                     fontWeight: 800,
@@ -89,39 +93,43 @@ export default function Navbar() {
                 {mobileOpen ? '✕' : '☰'}
             </button>
 
-            {/* Mobile dropdown */}
-            {mobileOpen && (
-                <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    style={{
-                        position: 'absolute',
-                        top: '64px',
-                        left: 0,
-                        right: 0,
-                        background: 'rgba(7, 7, 15, 0.95)',
-                        backdropFilter: 'blur(16px)',
-                        borderBottom: `1px solid ${COLORS.border}`,
-                        padding: '16px 24px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '8px',
-                    }}
-                >
-                    {NAV_LINKS.map((link) => {
-                        const isActive = activeSection === link.href.replace('#', '')
-                        return (
-                            <MobileNavButton
-                                key={link.href}
-                                label={link.label}
-                                href={link.href}
-                                isActive={isActive}
-                                onClick={() => handleNavClick(link.href)}
-                            />
-                        )
-                    })}
-                </motion.div>
-            )}
+            {/* Mobile dropdown — AnimatePresence enables the exit animation on close */}
+            <AnimatePresence>
+                {mobileOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2, ease: 'easeInOut' }}
+                        style={{
+                            position: 'absolute',
+                            top: '64px',
+                            left: 0,
+                            right: 0,
+                            background: 'rgba(7, 7, 15, 0.95)',
+                            backdropFilter: 'blur(16px)',
+                            borderBottom: `1px solid ${COLORS.border}`,
+                            padding: '16px 24px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '8px',
+                        }}
+                    >
+                        {NAV_LINKS.map((link) => {
+                            const isActive = activeSection === link.href.replace('#', '')
+                            return (
+                                <MobileNavButton
+                                    key={link.href}
+                                    label={link.label}
+                                    href={link.href}
+                                    isActive={isActive}
+                                    onClick={() => handleNavClick(link.href)}
+                                />
+                            )
+                        })}
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </motion.header>
     )
 }
@@ -137,12 +145,14 @@ interface NavButtonProps {
 
 function NavButton({ label, href, isActive, onClick }: NavButtonProps) {
     return (
-        <button
-            key={href}
-            onClick={onClick}
+        <a
+            href={href}
+            onClick={(e) => {
+                e.preventDefault()
+                onClick()
+            }}
+            className="nav-link"
             style={{
-                background: 'none',
-                border: 'none',
                 color: isActive ? COLORS.textPrimary : COLORS.textMuted,
                 fontSize: '0.875rem',
                 fontWeight: isActive ? 600 : 500,
@@ -150,12 +160,7 @@ function NavButton({ label, href, isActive, onClick }: NavButtonProps) {
                 padding: '4px 0',
                 position: 'relative',
                 transition: 'color 0.25s',
-                fontFamily: 'inherit',
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = COLORS.textPrimary)}
-            onMouseLeave={(e) =>
-                (e.currentTarget.style.color = isActive ? COLORS.textPrimary : COLORS.textMuted)
-            }
         >
             {label}
             {isActive && (
@@ -168,31 +173,31 @@ function NavButton({ label, href, isActive, onClick }: NavButtonProps) {
                         left: 0,
                         right: 0,
                         height: '2px',
-                        background: 'linear-gradient(90deg, #6366f1, #22d3ee)',
+                        background: `linear-gradient(90deg, ${COLORS.indigo}, ${COLORS.cyan})`,
                         borderRadius: '1px',
                     }}
                 />
             )}
-        </button>
+        </a>
     )
 }
 
 function MobileNavButton({ label, href, isActive, onClick }: NavButtonProps) {
     return (
-        <button
-            key={href}
-            onClick={onClick}
+        <a
+            href={href}
+            onClick={(e) => {
+                e.preventDefault()
+                onClick()
+            }}
+            className="nav-mobile-link"
             style={{
-                background: 'none',
-                border: 'none',
                 color: isActive ? COLORS.textPrimary : COLORS.textMuted,
                 fontSize: '1rem',
                 fontWeight: isActive ? 600 : 500,
                 cursor: 'pointer',
-                textAlign: 'left',
                 padding: '12px 0',
-                borderBottom: '1px solid rgba(99,102,241,0.1)',
-                fontFamily: 'inherit',
+                borderBottom: `1px solid ${COLORS.borderSubtle}`,
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
@@ -211,7 +216,7 @@ function MobileNavButton({ label, href, isActive, onClick }: NavButtonProps) {
                 />
             )}
             {label}
-        </button>
+        </a>
     )
 }
 
@@ -220,23 +225,16 @@ function ResumeButton() {
         <a
             href={RESUME_URL}
             download
+            className="nav-resume-btn"
             style={{
                 padding: '8px 20px',
-                border: '1px solid rgba(99, 102, 241, 0.5)',
+                border: `1px solid rgba(99, 102, 241, 0.5)`,
                 borderRadius: '8px',
                 color: COLORS.indigo,
                 fontSize: '0.875rem',
                 fontWeight: 600,
-                transition: 'all 0.2s',
+                transition: 'background 0.2s, border-color 0.2s',
                 cursor: 'pointer',
-            }}
-            onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(99,102,241,0.1)'
-                e.currentTarget.style.borderColor = COLORS.indigo
-            }}
-            onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'transparent'
-                e.currentTarget.style.borderColor = 'rgba(99,102,241,0.5)'
             }}
         >
             Resume
