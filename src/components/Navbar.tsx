@@ -147,7 +147,7 @@ export default function Navbar() {
                         />
                     )
                 })}
-                <ResumeButton />
+                {/* <ResumeButton /> */}
             </nav>
 
             {/* Mobile hamburger */}
