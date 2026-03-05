@@ -3,8 +3,39 @@ import { SectionHeading, GlassCard, TagPill, AnimatedEntrance } from '../compone
 import { COLORS } from '../constants/colors'
 import { STATS, BIO_PARAGRAPHS, ENTERPRISE_CLIENTS, STORE_LINKS } from '../data/about'
 import { useSectionInView } from '../hooks/useSectionInView'
-import { gradientText, gradientTextShort, cardSectionLabel } from '../styles'
+import { gradientText, gradientTextShort, cardSectionLabel, bodyText, flexWrapRow } from '../styles'
 import type { StatItem } from '../types'
+import type { CSSProperties } from 'react'
+
+// ─── Module-scope style constants ─────────────────────────────────────────────────────
+
+const statCardStyle: CSSProperties = {
+    padding: '28px',
+    flex: '1 1 120px',
+    textAlign: 'center',
+    cursor: 'default',
+    transition: 'border-color 0.3s',
+}
+
+const aboutContentGridStyle: CSSProperties = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+    gap: '64px',
+    alignItems: 'start',
+    marginTop: '24px',
+}
+
+const storeLinkInnerColumnStyle: CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '2px',
+}
+
+const storeLinkLabelStyle: CSSProperties = {
+    fontSize: '0.85rem',
+    fontWeight: 700,
+    color: COLORS.textPrimary,
+}
 
 /** Named props interface — required by convention; prevents anonymous inline types. */
 interface StatCardProps extends StatItem {
@@ -18,13 +49,7 @@ function StatCard({ value, label, index, inView }: StatCardProps) {
             initial={{ opacity: 0, y: 30 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5, delay: index * 0.1 }}
-            style={{
-                padding: '28px',
-                flex: '1 1 120px',
-                textAlign: 'center',
-                cursor: 'default',
-                transition: 'border-color 0.3s',
-            }}
+            style={statCardStyle}
             className="glass"
             whileHover={{ y: -4 }}
         >
@@ -48,7 +73,7 @@ export default function About() {
     const [ref, inView] = useSectionInView<HTMLDivElement>()
 
     return (
-        <section id="about" style={{ padding: '100px 24px', maxWidth: '1280px', margin: '0 auto' }}>
+        <section id="about" className="section-container">
             <div ref={ref}>
                 <SectionHeading
                     label="About"
@@ -61,33 +86,16 @@ export default function About() {
                     titleStyle={{ marginBottom: '24px' }}
                 />
 
-                <div
-                    style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-                        gap: '64px',
-                        alignItems: 'start',
-                        marginTop: '24px',
-                    }}
-                >
+                <div style={aboutContentGridStyle}>
                     {/* Bio — left column */}
                     <div>
                         {BIO_PARAGRAPHS.map((text, i) => (
                             <AnimatedEntrance key={text.slice(0, 30)} delay={0.2 + i * 0.1} inView={inView}>
-                                <p
-                                    style={{
-                                        color: COLORS.textSub,
-                                        lineHeight: 1.75,
-                                        fontSize: '0.95rem',
-                                        marginBottom: '16px',
-                                    }}
-                                >
-                                    {text}
-                                </p>
+                                <p style={{ ...bodyText, marginBottom: '16px' }}>{text}</p>
                             </AnimatedEntrance>
                         ))}
                         <AnimatedEntrance delay={0.65} inView={inView}>
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+                            <div style={flexWrapRow('12px')}>
                                 {STORE_LINKS.map(
                                     ({ label, sub, icon, href, color, bg, border, hoverBg, hoverBorder }) => (
                                         // motion.a + whileHover replaces onMouseEnter/onMouseLeave imperative mutations.
@@ -119,16 +127,8 @@ export default function About() {
                                             transition={{ duration: 0.2 }}
                                         >
                                             <span style={{ color, flexShrink: 0 }}>{icon}</span>
-                                            <span style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                                                <span
-                                                    style={{
-                                                        fontSize: '0.85rem',
-                                                        fontWeight: 700,
-                                                        color: COLORS.textPrimary,
-                                                    }}
-                                                >
-                                                    {label}
-                                                </span>
+                                            <span style={storeLinkInnerColumnStyle}>
+                                                <span style={storeLinkLabelStyle}>{label}</span>
                                                 <span style={{ fontSize: '0.72rem', color, opacity: 0.85 }}>{sub}</span>
                                             </span>
                                         </motion.a>
@@ -141,7 +141,7 @@ export default function About() {
                     {/* Stats + cards — right column */}
                     <div>
                         {/* Stats */}
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginBottom: '32px' }}>
+                        <div style={{ ...flexWrapRow('16px'), marginBottom: '32px' }}>
                             {STATS.map((stat, i) => (
                                 <StatCard key={stat.label} {...stat} index={i} inView={inView} />
                             ))}
@@ -151,7 +151,7 @@ export default function About() {
                         <AnimatedEntrance delay={0.5} inView={inView}>
                             <GlassCard style={{ padding: '24px', marginBottom: '16px' }}>
                                 <div style={cardSectionLabel()}>Enterprise Clients</div>
-                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                                <div style={flexWrapRow('10px')}>
                                     {ENTERPRISE_CLIENTS.map((client) => (
                                         <TagPill key={client} label={client} color={COLORS.indigo} />
                                     ))}
