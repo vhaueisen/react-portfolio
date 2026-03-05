@@ -132,9 +132,10 @@ export default function Hero() {
                         fontSize: 'clamp(3rem, 8vw, 7rem)',
                         fontWeight: 900,
                         lineHeight: 1,
-                        letterSpacing: '-0.04em',
+                        letterSpacing: '-0.02em',
                         marginBottom: '24px',
                         perspective: '600px',
+                        fontFamily: "'Space Grotesk', sans-serif",
                     }}
                 >
                     {NAME_CHARS.map((char, i) => (
@@ -144,7 +145,7 @@ export default function Hero() {
                             style={{
                                 display: 'inline-block',
                                 background:
-                                    'linear-gradient(135deg, #f1f5f9 30%, #6366f1 80%, #22d3ee 100%)',
+                                    'linear-gradient(135deg, #6366f1, #22d3ee)',
                                 WebkitBackgroundClip: 'text',
                                 WebkitTextFillColor: 'transparent',
                                 backgroundClip: 'text',
@@ -271,7 +272,7 @@ export default function Hero() {
                     display: 'none',
                     position: 'absolute',
                     right: '-40px',
-                    top: '12em',
+                    top: '9em',
                     transform: 'translateY(-50%)',
                     width: '620px',
                     height: '620px',
@@ -280,10 +281,14 @@ export default function Hero() {
                 className="hero-canvas-wrapper"
             >
                 <Canvas camera={{ position: [0, 0, 5], fov: 55 }} shadows>
-                    <ambientLight intensity={0.6} />
-                    <directionalLight position={[5, 8, 5]} intensity={1.2} castShadow />
-                    <pointLight position={[-4, 2, 4]} color="#6366f1" intensity={3} />
-                    <pointLight position={[4, -3, 2]} color="#22d3ee" intensity={2} />
+                    <ambientLight intensity={0.2} />
+                    <directionalLight position={[5, 8, 5]} intensity={0.5} castShadow />
+                    {/* main purple fill — front-left, close to the model */}
+                    <pointLight position={[-2, 2, 3]} color="#a855f7" intensity={8} />
+                    {/* rim light from behind with cyan to separate from background */}
+                    <pointLight position={[3, -2, -2]} color="#22d3ee" intensity={3} />
+                    {/* subtle warm top light to preserve face detail */}
+                    <pointLight position={[0, 5, 2]} color="#c084fc" intensity={4} />
                     <Environment preset="city" />
                     <Suspense fallback={<ModelFallback />}>
                         <AstronautModel />
