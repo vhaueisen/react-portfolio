@@ -77,7 +77,7 @@ function ProjectLinks({ project }: { project: ProjectItem }) {
                     <SiAppstore size={13} /> App Store
                 </a>
             )}
-            {project.link && !project.github && (
+            {project.link && (
                 <a
                     href={project.link}
                     target="_blank"
@@ -89,6 +89,7 @@ function ProjectLinks({ project }: { project: ProjectItem }) {
                         fontSize: '0.8rem',
                         color: project.color,
                         fontWeight: 600,
+                        marginLeft: 'auto',
                     }}
                 >
                     <FiExternalLink size={14} /> Visit Live
@@ -107,6 +108,7 @@ interface ProjectCardProps {
 
 function ProjectCard({ project, index }: ProjectCardProps) {
     const [hovered, setHovered] = useState(false)
+    const liveUrl = project.link ?? project.playStore ?? project.appStore
 
     return (
         <motion.div
@@ -117,6 +119,7 @@ function ProjectCard({ project, index }: ProjectCardProps) {
             transition={{ duration: 0.4, delay: index * 0.06 }}
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
+            onClick={() => liveUrl && window.open(liveUrl, '_blank', 'noopener,noreferrer')}
         >
             <GlassCard
                 accentColor={project.color}
@@ -126,7 +129,7 @@ function ProjectCard({ project, index }: ProjectCardProps) {
                     display: 'flex',
                     flexDirection: 'column',
                     gap: '16px',
-                    cursor: 'default',
+                    cursor: liveUrl ? 'pointer' : 'default',
                     position: 'relative',
                     overflow: 'hidden',
                     transform: hovered ? 'translateY(-6px)' : 'translateY(0)',

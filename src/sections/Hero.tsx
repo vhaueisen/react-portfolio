@@ -1,25 +1,62 @@
-import { Environment } from '@react-three/drei'
-import { Canvas } from '@react-three/fiber'
+import { useRef, Suspense } from 'react'
+import { Canvas, useFrame } from '@react-three/fiber'
+import { Float, useGLTF, useAnimations, Environment } from '@react-three/drei'
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import { motion } from 'framer-motion'
-import { Suspense } from 'react'
+import * as THREE from 'three'
 import { FiArrowDown, FiGithub, FiLinkedin } from 'react-icons/fi'
-import { AstronautModel, ModelFallback } from '../components/three'
-import { SocialIconLink, AnimatedEntrance, CanvasErrorBoundary } from '../components/ui'
-import { COLORS } from '../constants/colors'
-import { CONTACT_LINKS } from '../data/contact'
-import { gradientTextShort } from '../styles'
 
-// Derive stable hrefs from the canonical data source — single source of truth
-const emailHref = CONTACT_LINKS.find((l) => l.href.startsWith('mailto:'))!.href
-const githubHref = CONTACT_LINKS.find((l) => l.href.includes('github.com'))!.href
-const linkedinHref = CONTACT_LINKS.find((l) => l.href.includes('linkedin.com'))!.href
+const ASTRONAUT_URL = 'https://modelviewer.dev/shared-assets/models/Astronaut.glb'
 
-const NAME_CHARS = 'VITOR RUAS'.split('')
+useGLTF.preload(ASTRONAUT_URL)
+
+function AstronautModel() {
+    const groupRef = useRef<THREE.Group>(null!)
+    const { scene, animations } = useGLTF(ASTRONAUT_URL)
+    const { actions } = useAnimations(animations, groupRef)
+
+    // play first animation clip if available
+    const firstClip = animations[0]?.name
+    if (firstClip && actions[firstClip] && !actions[firstClip]!.isRunning()) {
+        actions[firstClip]!.play()
+    }
+
+    // slow idle rotation
+    useFrame((_, delta) => {
+        if (groupRef.current) {
+            groupRef.current.rotation.y += delta * 0.25
+        }
+    })
+
+    return (
+        <Float speed={1.2} rotationIntensity={0.15} floatIntensity={0.4}>
+            <group ref={groupRef} scale={1.1} position={[0, -1, 0]}>
+                <primitive object={scene} />
+            </group>
+        </Float>
+    )
+}
+
+function ModelFallback() {
+    const meshRef = useRef<THREE.Mesh>(null!)
+    useFrame((_, delta) => {
+        if (meshRef.current) meshRef.current.rotation.y += delta * 0.6
+    })
+    return (
+        <mesh ref={meshRef}>
+            <octahedronGeometry args={[1, 0]} />
+            <meshStandardMaterial color="#6366f1" wireframe />
+        </mesh>
+    )
+}
+
+const NAME_CHARS = 'VÍTOR RUAS'.split('')
 
 const containerVariants = {
     hidden: {},
-    visible: { transition: { staggerChildren: 0.04, delayChildren: 0.4 } },
+    visible: {
+        transition: { staggerChildren: 0.04, delayChildren: 0.4 },
+    },
 }
 
 const charVariants = {
@@ -45,42 +82,42 @@ export default function Hero() {
                 maxWidth: '1280px',
                 margin: '0 auto',
                 gap: '48px',
-                position: 'relative',
             }}
         >
             {/* Left: text content */}
-            <div className="hero-text" style={{ zIndex: 10 }}>
-                {/* Status badge */}
-                <AnimatedEntrance delay={0.2} yOffset={0}>
-                    <div
+            <div style={{ flex: 1, zIndex: 10 }}>
+                {/* Badge */}
+                <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                    style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        padding: '6px 14px',
+                        background: 'rgba(99, 102, 241, 0.12)',
+                        border: '1px solid rgba(99, 102, 241, 0.3)',
+                        borderRadius: '100px',
+                        fontSize: '0.8rem',
+                        color: '#22d3ee',
+                        fontWeight: 500,
+                        marginBottom: '24px',
+                    }}
+                >
+                    <span
                         style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            padding: '6px 14px',
-                            background: 'rgba(99, 102, 241, 0.12)',
-                            border: '1px solid rgba(99, 102, 241, 0.3)',
-                            borderRadius: '100px',
-                            fontSize: '0.8rem',
-                            color: COLORS.cyan,
-                            fontWeight: 500,
-                            marginBottom: '24px',
+                            width: '6px',
+                            height: '6px',
+                            borderRadius: '50%',
+                            background: '#22d3ee',
+                            animation: 'pulse 2s infinite',
                         }}
-                    >
-                        <span
-                            style={{
-                                width: '6px',
-                                height: '6px',
-                                borderRadius: '50%',
-                                background: COLORS.cyan,
-                                animation: 'pulse 2s infinite',
-                            }}
-                        />
-                        Available for US Remote Roles
-                    </div>
-                </AnimatedEntrance>
+                    />
+                    Available for US Remote Roles
+                </motion.div>
 
-                {/* Animated name — per-character flip-in */}
+                {/* Animated name */}
                 <motion.div
                     variants={containerVariants}
                     initial="hidden"
@@ -91,19 +128,22 @@ export default function Hero() {
                         fontSize: 'clamp(3rem, 8vw, 7rem)',
                         fontWeight: 900,
                         lineHeight: 1,
-                        letterSpacing: '-0.02em',
+                        letterSpacing: '-0.04em',
                         marginBottom: '24px',
                         perspective: '600px',
-                        fontFamily: "'Space Grotesk', sans-serif",
                     }}
                 >
                     {NAME_CHARS.map((char, i) => (
                         <motion.span
-                            key={`${char}-${i}`}
+                            key={i}
                             variants={charVariants}
                             style={{
                                 display: 'inline-block',
-                                ...gradientTextShort,
+                                background:
+                                    'linear-gradient(135deg, #f1f5f9 30%, #6366f1 80%, #22d3ee 100%)',
+                                WebkitBackgroundClip: 'text',
+                                WebkitTextFillColor: 'transparent',
+                                backgroundClip: 'text',
                                 whiteSpace: char === ' ' ? 'pre' : 'normal',
                                 minWidth: char === ' ' ? '0.35em' : undefined,
                             }}
@@ -113,106 +153,148 @@ export default function Hero() {
                     ))}
                 </motion.div>
 
-                {/* Subtitle lines */}
-                <AnimatedEntrance delay={0.9}>
-                    <p
-                        style={{
-                            fontSize: 'clamp(1rem, 2.5vw, 1.25rem)',
-                            color: COLORS.textSub,
-                            lineHeight: 1.6,
-                            marginBottom: '16px',
-                            maxWidth: '520px',
-                        }}
-                    >
-                        Senior Mobile Engineer · React Native · Interactive 3D
-                    </p>
-                </AnimatedEntrance>
+                {/* Subtitle */}
+                <motion.p
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.9 }}
+                    style={{
+                        fontSize: 'clamp(1rem, 2.5vw, 1.25rem)',
+                        color: '#94a3b8',
+                        lineHeight: 1.6,
+                        marginBottom: '16px',
+                        maxWidth: '520px',
+                    }}
+                >
+                    Senior Mobile Engineer · React Native · Interactive 3D
+                </motion.p>
 
-                <AnimatedEntrance delay={1.0}>
-                    <p
-                        style={{
-                            fontSize: '0.95rem',
-                            color: COLORS.textMuted,
-                            lineHeight: 1.6,
-                            marginBottom: '40px',
-                            maxWidth: '480px',
-                        }}
-                    >
-                        7+ years architecting mobile experiences. Former game dev with a passion for
-                        performance, real-time systems, and polished interactive UIs.
-                    </p>
-                </AnimatedEntrance>
+                <motion.p
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 1.0 }}
+                    style={{
+                        fontSize: '0.95rem',
+                        color: '#64748b',
+                        lineHeight: 1.6,
+                        marginBottom: '40px',
+                        maxWidth: '480px',
+                    }}
+                >
+                    7+ years architecting mobile experiences. Former game dev with a
+                    passion for performance, real-time systems, and polished interactive UIs.
+                </motion.p>
 
                 {/* CTAs */}
-                <AnimatedEntrance delay={1.1}>
-                    <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: '48px' }}>
-                        <button
-                            className="btn-primary"
-                            onClick={() =>
-                                document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' })
-                            }
-                        >
-                            View Projects <FiArrowDown size={16} />
-                        </button>
-                        <a href={emailHref} className="btn-secondary">
-                            Get in Touch
-                        </a>
-                    </div>
-                </AnimatedEntrance>
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 1.1 }}
+                    style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: '48px' }}
+                >
+                    <button
+                        className="btn-primary"
+                        onClick={() =>
+                            document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' })
+                        }
+                    >
+                        View Projects <FiArrowDown size={16} />
+                    </button>
+                    <a
+                        href="mailto:vitorhaueisen@gmail.com"
+                        className="btn-secondary"
+                    >
+                        Get in Touch
+                    </a>
+                </motion.div>
 
-                {/* Social links */}
-                <AnimatedEntrance delay={1.3} yOffset={0}>
-                    <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-                        <SocialIconLink
-                            href={githubHref}
-                            icon={<FiGithub size={22} />}
-                            label="GitHub"
-                            hoverColor={COLORS.textPrimary}
-                        />
-                        <SocialIconLink
-                            href={linkedinHref}
-                            icon={<FiLinkedin size={22} />}
-                            label="LinkedIn"
-                            hoverColor={COLORS.indigo}
-                        />
-                    </div>
-                </AnimatedEntrance>
+                {/* Social */}
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.6, delay: 1.3 }}
+                    style={{ display: 'flex', gap: '20px', alignItems: 'center' }}
+                >
+                    <a
+                        href="https://github.com/vhaueisen"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                            color: '#64748b',
+                            transition: 'color 0.2s',
+                            display: 'flex',
+                            alignItems: 'center',
+                        }}
+                        onMouseEnter={(e) =>
+                            ((e.currentTarget as HTMLAnchorElement).style.color = '#f1f5f9')
+                        }
+                        onMouseLeave={(e) =>
+                            ((e.currentTarget as HTMLAnchorElement).style.color = '#64748b')
+                        }
+                    >
+                        <FiGithub size={22} />
+                    </a>
+                    <a
+                        href="https://linkedin.com/in/vitor-ruas"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                            color: '#64748b',
+                            transition: 'color 0.2s',
+                            display: 'flex',
+                            alignItems: 'center',
+                        }}
+                        onMouseEnter={(e) =>
+                            ((e.currentTarget as HTMLAnchorElement).style.color = '#6366f1')
+                        }
+                        onMouseLeave={(e) =>
+                            ((e.currentTarget as HTMLAnchorElement).style.color = '#64748b')
+                        }
+                    >
+                        <FiLinkedin size={22} />
+                    </a>
+                    <span style={{ color: '#1e293b', fontSize: '0.75rem', marginLeft: '4px' }}>
+                    </span>
+                </motion.div>
             </div>
 
-            {/* Right: 3D Astronaut canvas */}
+            {/* Right: 3D canvas */}
             <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 1, delay: 0.5, ease: 'easeOut' }}
-                className="hero-canvas-wrapper"
                 style={{
+                    flex: '0 0 460px',
+                    height: '460px',
                     display: 'none',
-                    position: 'absolute',
-                    right: '-40px',
-                    top: '9em',
-                    transform: 'translateY(-50%)',
-                    width: '620px',
-                    height: '620px',
-                    pointerEvents: 'none',
+                    position: 'relative',
                 }}
+                className="hero-canvas-wrapper"
             >
-                <CanvasErrorBoundary>
-                    <Canvas camera={{ position: [0, 0, 5], fov: 55 }} shadows>
-                        <ambientLight intensity={0.2} />
-                        <directionalLight position={[5, 8, 5]} intensity={0.5} castShadow />
-                        <pointLight position={[-2, 2, 3]} color="#a855f7" intensity={8} />
-                        <pointLight position={[3, -2, -2]} color="#22d3ee" intensity={3} />
-                        <pointLight position={[0, 5, 2]} color="#c084fc" intensity={4} />
-                        <Environment preset="city" />
-                        <Suspense fallback={<ModelFallback />}>
-                            <AstronautModel />
-                        </Suspense>
-                        <EffectComposer>
-                            <Bloom intensity={0.5} luminanceThreshold={0.3} luminanceSmoothing={0.9} mipmapBlur />
-                        </EffectComposer>
-                    </Canvas>
-                </CanvasErrorBoundary>
+                <Canvas camera={{ position: [0, 0, 5], fov: 55 }} shadows>
+                    <ambientLight intensity={0.6} />
+                    <directionalLight position={[5, 8, 5]} intensity={1.2} castShadow />
+                    <pointLight position={[-4, 2, 4]} color="#6366f1" intensity={3} />
+                    <pointLight position={[4, -3, 2]} color="#22d3ee" intensity={2} />
+                    <Environment preset="city" />
+                    <Suspense fallback={<ModelFallback />}>
+                        <AstronautModel />
+                    </Suspense>
+                    <EffectComposer>
+                        <Bloom intensity={0.5} luminanceThreshold={0.3} luminanceSmoothing={0.9} mipmapBlur />
+                    </EffectComposer>
+                </Canvas>
             </motion.div>
+
+            <style>{`
+        @media (min-width: 900px) {
+          .hero-canvas-wrapper { display: block !important; }
+        }
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.4; }
+        }
+      `}</style>
         </section>
     )
 }

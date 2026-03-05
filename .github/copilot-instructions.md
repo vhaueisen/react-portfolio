@@ -30,7 +30,10 @@ src/
 - Prefer `interface` for object shapes, `type` for unions and aliases.
 - Never use inline anonymous object types in component props — always name them.
 - Use `as const` on plain-value lookup objects (e.g. `COLORS`).
-- Avoid `any`. If a third-party type is wrong or too narrow, cast with `as unknown as TargetType` and add a comment.
+- Avoid `any`. If a third-party type is wrong or too narrow, use a **precise cast**: `value as Parameters<typeof fn>[0]` or `value as unknown as TargetType`. Never silently widen with `as any`. Leave a comment explaining the cast.
+- Never reference the `React` namespace (e.g. `React.ReactNode`, `React.CSSProperties`) — always use named imports: `import type { ReactNode, CSSProperties } from 'react'`.
+- Use `useRef<T | null>(null)` — not `useRef<T>(null!)`. The non-null assertion contradicts the `if (ref.current)` guard that is required in `useFrame` and `useEffect`. Be consistent: assert non-null only when the element is guaranteed to exist before any access.
+- Guard `document.getElementById` calls with an explicit error: `if (!el) throw new Error('...')`. Silent `!` assertions hide missing DOM elements.
 
 ---
 
@@ -48,9 +51,20 @@ Two-layer approach — pick the right layer for the job:
 
 - **Never duplicate** `rgba(13,13,31,0.7)` + `backdropFilter` + `border` inline. Use `glassCard` from `src/styles`.
 - **Never duplicate** the gradient text clip pattern inline. Use `gradientText` or `gradientTextShort` from `src/styles`.
-- **Never hardcode** palette hex values in components. Import from `COLORS` in `src/constants/colors.ts`.
+- **Never hardcode** palette hex values in components — not in `style` props, not inside Tailwind arbitrary value brackets (`text-[#64748b]`). Always use `COLORS` from `src/constants/colors.ts` or a `var(--color-*)` CSS custom property.
 - The `COLORS` object mirrors the `@theme` block in `src/index.css`. Both must stay in sync when the palette changes.
-- Global utility classes defined in `src/index.css` (`.glass`, `.gradient-text`, `.btn-primary`, `.btn-secondary`) are for HTML elements that can't accept TS style objects (e.g. inside a `<style>` block or plain HTML).
+- `src/styles/index.ts` exports helper functions (`accentBorder`, `iconBox`, `periodBadge`, `tagPill`) in addition to the style constants. Use them instead of recreating the same multi-property object inline.
+- Global utility classes defined in `src/index.css` (`.glass`, `.gradient-text`, `.btn-primary`, `.btn-secondary`) are for HTML elements that can't accept TS style objects.
+- Hover states for interactive elements belong in `src/index.css` as named CSS classes referencing `var(--color-*)` tokens. Never use `onMouseEnter`/`onMouseLeave` to imperatively mutate `e.currentTarget.style`.
+
+---
+
+## CSS conventions (`src/index.css`)
+
+- All `@keyframes` animations, responsive visibility rules, and component hover states live here — no inline `<style>` tags anywhere in the component tree.
+- Group rules under named section comments: `/* ─── Navbar … */`, `/* ─── Hero … */`, etc.
+- CSS hover rules must reference `@theme` custom properties (`var(--color-accent-indigo)`, `var(--color-text-primary)`, …), not raw hex values.
+- Responsive show/hide is handled with `.nav-desktop` / `.nav-mobile-toggle` classes and `@media` blocks in this file, not with inline `display` style toggling.
 
 ---
 
@@ -69,6 +83,9 @@ Two-layer approach — pick the right layer for the job:
 - Hooks belong in `src/hooks/`. Name files `use<CamelCase>.ts`.
 - Each hook file exports exactly one hook as a named export.
 - Clean up all event listeners and observers in the `useEffect` return function.
+- Hooks must not re-export constants from data files. Consumers that need a constant import it directly from `src/data/` or `src/constants/`.
+- UI layout constants (pixel heights, scroll ratios, animation timing) are **not domain data**. They belong in the hook that uses them, not in `src/data/`.
+- When a parent section already has `inView`, pass it down to sub-components instead of calling `useSectionInView` inside each child — avoid creating multiple redundant `IntersectionObserver` instances for the same viewport event.
 
 ---
 
@@ -81,6 +98,7 @@ Two-layer approach — pick the right layer for the job:
 | `TagPill` | Single tag/badge pill with icon support; used in Projects, Skills, About |
 | `SocialIconLink` | Icon `<a>` with hover color swap via CSS custom property |
 | `AnimatedEntrance` | `opacity/y → visible` entrance wrapper; pass `inView` for scroll-triggered variant |
+| `CanvasErrorBoundary` | Class-based error boundary that catches WebGL/R3F failures and renders a glass-card fallback |
 
 ### Component conventions
 
@@ -89,6 +107,15 @@ Two-layer approach — pick the right layer for the job:
 - Components that accept `children` should type it as `ReactNode`.
 - Prefer `style` spread composition over `className` overrides for layout that varies from call site to call site.
 - Use the `className` prop only for Tailwind utility overrides that don't require dynamic values.
+- `key` props belong only on list children. Never place `key` on an element that is not inside a `.map()` — it is a no-op and indicates a copy-paste error.
+
+---
+
+## Error boundaries
+
+- Every `<Canvas>` (R3F) in the tree must be wrapped in `<CanvasErrorBoundary>` from `src/components/ui`. A WebGL context failure or Three.js runtime error must not crash the entire React tree.
+- `CanvasErrorBoundary` is a class component — React's error boundary API (`getDerivedStateFromError` / `componentDidCatch`) is only available on class components. This is intentional and demonstrates correct React knowledge.
+- Pass a custom `fallback` prop when the default "3D rendering not available" message does not fit the context.
 
 ---
 
@@ -97,7 +124,8 @@ Two-layer approach — pick the right layer for the job:
 - Every file in this directory requires an active R3F `<Canvas>` context in the tree.
 - Never render these outside a `<Canvas>`. If a component might be used in both contexts, split it.
 - Animated meshes must use `useFrame` — never `setInterval` or `requestAnimationFrame`.
-- Geometry and material props that don't change must be wrapped in `useMemo` to avoid re-allocation on every render.
+- Geometry and material instances that do not change must be wrapped in `useMemo` to prevent re-allocation on every render frame (~60 allocations/second otherwise).
+- Side effects that target Three.js objects (e.g. `action.play()`, `mixer.update()`) must run inside `useEffect`, never in the render body. Running them during render causes double-invocation in React StrictMode.
 - Export from `src/components/three/index.ts`.
 
 ---
@@ -108,6 +136,8 @@ Two-layer approach — pick the right layer for the job:
 - Data files are **pure** — no hooks, no side-effects, no React component definitions.
 - All arrays must be typed with the corresponding interface from `src/types/`.
 - Do **not** co-locate data with the section that consumes it. All data lives in `src/data/`.
+- Do **not** include UI layout constants (heights, scroll ratios, animation durations) in data files. Those belong in the hook or component that uses them.
+- A type declared in `src/types/index.ts` must be the single source of truth. Never re-declare a structurally identical interface locally inside a section or component.
 
 ---
 
@@ -117,7 +147,18 @@ Two-layer approach — pick the right layer for the job:
 - Staggered children: define `containerVariants` / `charVariants` outside the component (stable references).
 - Shared layout transitions: use `layoutId` for elements that move between positions (e.g. nav underline).
 - Filter grid transitions: wrap with `<AnimatePresence mode="popLayout">` + `motion.div layout`.
+- Conditional renders that need an exit animation **must** be wrapped in `<AnimatePresence>`. Without it, the `exit` prop is silently ignored and the element disappears instantly.
+- Every `initial`/`animate` pair inside `<AnimatePresence>` must have a matching `exit` prop.
 - Never put animation variant objects inside the component body — they recreate on every render.
+
+---
+
+## Accessibility
+
+- Navigation links use `<a href={href}>` with `e.preventDefault()` + imperative smooth-scroll — not `<button>` elements. This makes them keyboard-navigable, right-clickable, and semantically correct as links.
+- Every `<a>` tag must have an `href`. An anchor without `href` is not focusable via keyboard and has no semantic meaning. Use `<button>` for actions that are not navigations.
+- Icon-only buttons and links must have `aria-label`.
+- Error boundary fallback containers must have `aria-label="<description> unavailable"`.
 
 ---
 
@@ -154,8 +195,18 @@ Two-layer approach — pick the right layer for the job:
 ## Do not
 
 - Import palette hex values directly in components — always use `COLORS`.
-- Define inline style objects that contain more than two properties repeatedly — extract to `src/styles/`.
+- Hardcode hex values inside Tailwind arbitrary value brackets (`text-[#64748b]`) — use `style={{ color: COLORS.x }}` instead.
+- Define inline style objects with more than two properties repeatedly — extract to `src/styles/`.
+- Use `onMouseEnter`/`onMouseLeave` to imperatively mutate `e.currentTarget.style` — use a CSS class with a `:hover` rule in `src/index.css`.
+- Write CSS hover rules with raw hex values — reference `var(--color-*)` `@theme` tokens.
 - Add `useState` for hover effects when a CSS transition suffices (except where JS state is genuinely needed for conditional rendering).
 - Use `index` as a React `key` unless the list is static and never reordered.
-- Inline `<style>` tags for responsive breakpoints — use Tailwind responsive prefixes (`md:`, `lg:`) or `@layer` utilities in `src/index.css`.
+- Inline `<style>` tags anywhere — all styles go in `src/index.css` or as `style`/`className` props.
 - Duplicate data arrays across files — one source of truth in `src/data/`.
+- Duplicate type shapes locally — one source of truth in `src/types/index.ts`.
+- Place UI layout constants (heights, ratios, durations) in `src/data/` files.
+- Re-export constants from hooks — consumers import directly from the source.
+- Render `<Canvas>` without a `<CanvasErrorBoundary>` wrapper.
+- Run Three.js side effects (`.play()`, `.pause()`, mutations) in the render body — always `useEffect`.
+- Use `React.X` namespace references — always use named `import type { X } from 'react'`.
+- Cast to `any` — use `Parameters<typeof fn>[n]` or `as unknown as T` with a comment.
