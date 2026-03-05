@@ -13,7 +13,7 @@ const NAV_LINKS = [
 export default function Navbar() {
     const [scrolled, setScrolled] = useState(false)
     const [mobileOpen, setMobileOpen] = useState(false)
-    const [activeSection, setActiveSection] = useState<string | null>(null)
+    const [activeSection, setActiveSection] = useState<string | null>('hero')
 
     useEffect(() => {
         // Scroll background
