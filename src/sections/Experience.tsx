@@ -142,18 +142,17 @@ export default function Experience() {
                         </div>
 
                         <motion.div
+                            className="exp-grid"
                             initial={{ opacity: 0, y: 30 }}
                             animate={inView ? { opacity: 1, y: 0 } : {}}
                             transition={{ duration: 0.6, delay: 0.2 }}
                             style={{
                                 display: 'grid',
-                                gridTemplateColumns: 'minmax(220px, 300px) 1fr',
-                                gap: '48px',
                                 alignItems: 'center',
                             }}
                         >
-                            {/* ── Timeline + drum-roll tilt (driven by page scroll) ── */}
-                            <div style={{
+                            {/* ── Vertical timeline (desktop) ── */}
+                            <div className="exp-timeline-vert" style={{
                                 position: 'relative',
                                 height: EXPERIENCE.length * ITEM_HEIGHT,
                                 userSelect: 'none',
@@ -259,6 +258,92 @@ export default function Experience() {
                                             </div>
                                         )
                                     })}
+                                </div>
+                            </div>
+
+                            {/* ── Horizontal timeline (mobile) ── */}
+                            <div className="exp-timeline-horiz" style={{ userSelect: 'none' }}>
+                                {/* Background track */}
+                                <div style={{ position: 'relative' }}>
+                                    <div style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        position: 'relative',
+                                    }}>
+                                        <div style={{
+                                            position: 'absolute',
+                                            left: '7px', right: '7px',
+                                            top: '50%',
+                                            transform: 'translateY(-50%)',
+                                            height: '2px',
+                                            background: '#1e293b',
+                                            zIndex: 1,
+                                        }} />
+                                        {/* Progress fill — anchored right, grows left as we go deeper in history */}
+                                        <div style={{
+                                            position: 'absolute',
+                                            right: '7px',
+                                            top: '50%',
+                                            transform: 'translateY(-50%)',
+                                            height: '2px',
+                                            width: EXPERIENCE.length > 1
+                                                ? `calc(${(Math.min(drumPos, EXPERIENCE.length - 1) / (EXPERIENCE.length - 1)) * 100}% - 14px)`
+                                                : '0',
+                                            background: `linear-gradient(to left, #6366f1, ${item.color})`,
+                                            zIndex: 2,
+                                            transition: 'width 0.25s ease',
+                                        }} />
+                                        {/* Dots — oldest left, newest right */}
+                                        {[...EXPERIENCE].reverse().map((exp, j) => {
+                                            const origIndex = EXPERIENCE.length - 1 - j
+                                            const isActive = origIndex === selectedIndex
+                                            const isFilled = origIndex <= selectedIndex
+                                            return (
+                                                <div
+                                                    key={exp.company + '-hdot'}
+                                                    style={{
+                                                        flex: 1,
+                                                        display: 'flex',
+                                                        justifyContent: j === 0 ? 'flex-start' : j === EXPERIENCE.length - 1 ? 'flex-end' : 'center',
+                                                        position: 'relative',
+                                                        zIndex: 3,
+                                                    }}
+                                                >
+                                                    <div style={{
+                                                        width: '14px',
+                                                        height: '14px',
+                                                        borderRadius: '50%',
+                                                        background: isFilled ? exp.color : '#0f172a',
+                                                        border: `2px solid ${isFilled ? exp.color : '#334155'}`,
+                                                        boxShadow: isActive ? `0 0 14px ${exp.color}` : 'none',
+                                                        transition: 'background 0.4s, border-color 0.4s, box-shadow 0.4s',
+                                                    }} />
+                                                </div>
+                                            )
+                                        })}
+                                    </div>
+                                    {/* Company labels */}
+                                    <div style={{ display: 'flex', marginTop: '10px' }}>
+                                        {[...EXPERIENCE].reverse().map((exp, j) => {
+                                            const origIndex = EXPERIENCE.length - 1 - j
+                                            const isActive = origIndex === selectedIndex
+                                            return (
+                                                <div
+                                                    key={exp.company + '-hlabel'}
+                                                    style={{
+                                                        flex: 1,
+                                                        fontSize: '0.65rem',
+                                                        fontWeight: isActive ? 700 : 400,
+                                                        color: isActive ? exp.color : '#475569',
+                                                        transition: 'color 0.35s',
+                                                        textAlign: j === 0 ? 'left' : j === EXPERIENCE.length - 1 ? 'right' : 'center',
+                                                    }}
+                                                >
+                                                    {exp.company}
+                                                </div>
+                                            )
+                                        })}
+                                    </div>
                                 </div>
                             </div>
 
@@ -376,6 +461,22 @@ export default function Experience() {
                     </div>
                 </div>
             </div>
+
+            <style>{`
+                .exp-grid {
+                    grid-template-columns: minmax(220px, 300px) 1fr;
+                    gap: 48px;
+                }
+                .exp-timeline-horiz { display: none; }
+                @media (max-width: 899px) {
+                    .exp-grid {
+                        grid-template-columns: 1fr !important;
+                        gap: 20px !important;
+                    }
+                    .exp-timeline-vert { display: none; }
+                    .exp-timeline-horiz { display: block; }
+                }
+            `}</style>
         </section>
     )
 }

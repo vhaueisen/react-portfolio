@@ -21,16 +21,18 @@ function AstronautModel() {
         actions[firstClip]!.play()
     }
 
-    // slow idle rotation
+    // zero-gravity tumble — different speed per axis creates non-repeating drift
     useFrame((_, delta) => {
         if (groupRef.current) {
-            groupRef.current.rotation.y += delta * 0.25
+            groupRef.current.rotation.y += delta * 0.28
+            groupRef.current.rotation.x += delta * 0.11
+            groupRef.current.rotation.z += delta * 0.06
         }
     })
 
     return (
         <Float speed={1.2} rotationIntensity={0.15} floatIntensity={0.4}>
-            <group ref={groupRef} scale={1.1} position={[0, -1, 0]}>
+            <group ref={groupRef} scale={1.5} position={[0, -1, 0]}>
                 <primitive object={scene} />
             </group>
         </Float>
@@ -50,7 +52,7 @@ function ModelFallback() {
     )
 }
 
-const NAME_CHARS = 'VÍTOR RUAS'.split('')
+const NAME_CHARS = 'VITOR HAUEISEN'.split('')
 
 const containerVariants = {
     hidden: {},
@@ -82,10 +84,11 @@ export default function Hero() {
                 maxWidth: '1280px',
                 margin: '0 auto',
                 gap: '48px',
+                position: 'relative',
             }}
         >
             {/* Left: text content */}
-            <div style={{ flex: 1, zIndex: 10 }}>
+            <div style={{ flex: 1, zIndex: 2, position: 'relative' }}>
                 {/* Badge */}
                 <motion.div
                     initial={{ opacity: 0, x: -20 }}
@@ -125,7 +128,7 @@ export default function Hero() {
                     style={{
                         display: 'flex',
                         flexWrap: 'wrap',
-                        fontSize: 'clamp(3rem, 8vw, 7rem)',
+                        fontSize: 'clamp(1.5rem, 9vw, 4.5rem)',
                         fontWeight: 900,
                         lineHeight: 1,
                         letterSpacing: '-0.04em',
@@ -258,16 +261,20 @@ export default function Hero() {
                 </motion.div>
             </div>
 
-            {/* Right: 3D canvas */}
+            {/* Right: 3D canvas — absolutely fills the right half, sits behind text */}
             <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 1, delay: 0.5, ease: 'easeOut' }}
                 style={{
-                    flex: '0 0 460px',
-                    height: '460px',
+                    position: 'absolute',
+                    right: 0,
+                    top: 0,
+                    width: '50%',
+                    height: '100%',
                     display: 'none',
-                    position: 'relative',
+                    zIndex: 1,
+                    pointerEvents: 'none',
                 }}
                 className="hero-canvas-wrapper"
             >

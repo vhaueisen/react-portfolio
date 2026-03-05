@@ -1,4 +1,4 @@
-# Vitor Ruas — Portfolio
+# Vitor Haueisen — Portfolio
 
 Personal portfolio website for **Vitor Haueisen Costa Ruas**, Senior Mobile Engineer (React Native). Features an interactive 3D scene, animated sections, and a full overview of experience, skills, and projects.
 
