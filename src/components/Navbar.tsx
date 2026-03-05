@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 
 const NAV_LINKS = [
+    { label: 'Home', href: '#hero' },
     { label: 'About', href: '#about' },
     { label: 'Experience', href: '#experience' },
     { label: 'Projects', href: '#projects' },
@@ -19,28 +20,23 @@ export default function Navbar() {
         const handleScroll = () => setScrolled(window.scrollY > 20)
         window.addEventListener('scroll', handleScroll, { passive: true })
 
-        // Active section tracking via IntersectionObserver — no flickering at boundaries
-        // rootMargin creates a detection strip from 15% to 25% from the top of the viewport,
-        // so only the section currently filling that zone is considered "active".
-        const intersecting = new Set<string>()
-
+        // Active section tracking via IntersectionObserver.
+        // Only fire on ENTER (isIntersecting = true) — we never clear the active state
+        // when a section leaves, so there is no gap-state between two sections that
+        // would cause the link to flash off and back on.
+        // rootMargin carves out a narrow band at ~40–45 % from the top of the viewport.
         const observer = new IntersectionObserver(
             (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        intersecting.add(entry.target.id)
-                    } else {
-                        intersecting.delete(entry.target.id)
-                    }
-                })
-                // Pick the first (topmost) nav section that's visible in the detection zone
-                const active = NAV_LINKS.find((l) =>
-                    intersecting.has(l.href.replace('#', ''))
+                const entering = entries.filter((e) => e.isIntersecting)
+                if (entering.length === 0) return
+                // If multiple sections enter in the same batch, pick the topmost one
+                const topmost = entering.reduce((a, b) =>
+                    a.boundingClientRect.top < b.boundingClientRect.top ? a : b
                 )
-                setActiveSection(active ? active.href.replace('#', '') : null)
+                setActiveSection(topmost.target.id)
             },
             {
-                rootMargin: '-15% 0px -75% 0px',
+                rootMargin: '-40% 0px -55% 0px',
                 threshold: 0,
             }
         )
@@ -142,28 +138,21 @@ export default function Navbar() {
                             }
                         >
                             {link.label}
-                            <AnimatePresence>
-                                {isActive && (
-                                    <motion.span
-                                        layoutId="nav-underline"
-                                        initial={{ opacity: 0, scaleX: 0 }}
-                                        animate={{ opacity: 1, scaleX: 1 }}
-                                        exit={{ opacity: 0, scaleX: 0 }}
-                                        transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                                        style={{
-                                            position: 'absolute',
-                                            bottom: -2,
-                                            left: 0,
-                                            right: 0,
-                                            height: '2px',
-                                            background:
-                                                'linear-gradient(90deg, #6366f1, #22d3ee)',
-                                            borderRadius: '1px',
-                                            transformOrigin: 'left',
-                                        }}
-                                    />
-                                )}
-                            </AnimatePresence>
+                            {isActive && (
+                                <motion.span
+                                    layoutId="nav-underline"
+                                    transition={{ type: 'spring', stiffness: 380, damping: 32 }}
+                                    style={{
+                                        position: 'absolute',
+                                        bottom: -2,
+                                        left: 0,
+                                        right: 0,
+                                        height: '2px',
+                                        background: 'linear-gradient(90deg, #6366f1, #22d3ee)',
+                                        borderRadius: '1px',
+                                    }}
+                                />
+                            )}
                         </button>
                     )
                 })}

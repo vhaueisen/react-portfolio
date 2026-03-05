@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
+import { SiGoogleplay, SiAppstore } from 'react-icons/si'
 
 const STATS = [
     { value: '7+', label: 'Years Experience' },
@@ -163,6 +164,7 @@ export default function About() {
                                 backdropFilter: 'blur(12px)',
                                 border: '1px solid rgba(99, 102, 241, 0.15)',
                                 borderRadius: '16px',
+                                marginBottom: '16px',
                             }}
                         >
                             <div style={{ fontSize: '0.75rem', color: '#6366f1', fontWeight: 600, marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Enterprise Clients</div>
@@ -182,6 +184,87 @@ export default function About() {
                                     >
                                         {client}
                                     </span>
+                                ))}
+                            </div>
+                        </motion.div>
+
+                        {/* Store presence */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={inView ? { opacity: 1, y: 0 } : {}}
+                            transition={{ duration: 0.5, delay: 0.65 }}
+                            style={{
+                                padding: '24px',
+                                background: 'rgba(13, 13, 31, 0.7)',
+                                backdropFilter: 'blur(12px)',
+                                border: '1px solid rgba(99, 102, 241, 0.15)',
+                                borderRadius: '16px',
+                            }}
+                        >
+                            <div style={{ fontSize: '0.75rem', color: '#6366f1', fontWeight: 600, marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Published on</div>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+                                {[
+                                    {
+                                        label: 'Google Play',
+                                        sub: '5+ apps published',
+                                        icon: <SiGoogleplay size={18} />,
+                                        href: 'https://play.google.com/store/apps/dev?id=7255636574877532443&hl=pt',
+                                        color: '#34d399',
+                                        bg: 'rgba(52, 211, 153, 0.08)',
+                                        border: 'rgba(52, 211, 153, 0.25)',
+                                        hoverBg: 'rgba(52, 211, 153, 0.15)',
+                                        hoverBorder: 'rgba(52, 211, 153, 0.5)',
+                                    },
+                                    {
+                                        label: 'App Store',
+                                        sub: '5+ apps published',
+                                        icon: <SiAppstore size={18} />,
+                                        href: 'https://apps.apple.com/br/developer/realink-solucoes-em-jogos-eletronicos-ltda/id1563589903',
+                                        color: '#60a5fa',
+                                        bg: 'rgba(96, 165, 250, 0.08)',
+                                        border: 'rgba(96, 165, 250, 0.25)',
+                                        hoverBg: 'rgba(96, 165, 250, 0.15)',
+                                        hoverBorder: 'rgba(96, 165, 250, 0.5)',
+                                    },
+                                ].map(({ label, sub, icon, href, color, bg, border, hoverBg, hoverBorder }) => (
+                                    <a
+                                        key={label}
+                                        href={href}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        style={{
+                                            display: 'inline-flex',
+                                            alignItems: 'center',
+                                            gap: '12px',
+                                            padding: '12px 18px',
+                                            background: bg,
+                                            border: `1px solid ${border}`,
+                                            borderRadius: '12px',
+                                            textDecoration: 'none',
+                                            transition: 'background 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s',
+                                            flex: '1 1 160px',
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            const el = e.currentTarget
+                                            el.style.background = hoverBg
+                                            el.style.borderColor = hoverBorder
+                                            el.style.transform = 'translateY(-2px)'
+                                            el.style.boxShadow = `0 8px 24px ${color}20`
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            const el = e.currentTarget
+                                            el.style.background = bg
+                                            el.style.borderColor = border
+                                            el.style.transform = 'translateY(0)'
+                                            el.style.boxShadow = 'none'
+                                        }}
+                                    >
+                                        <span style={{ color, flexShrink: 0 }}>{icon}</span>
+                                        <span style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                                            <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#f1f5f9' }}>{label}</span>
+                                            <span style={{ fontSize: '0.72rem', color, opacity: 0.85 }}>{sub}</span>
+                                        </span>
+                                    </a>
                                 ))}
                             </div>
                         </motion.div>
