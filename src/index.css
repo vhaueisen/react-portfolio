@@ -1,128 +1,132 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
-    --color-void: #07070f;
-    --color-surface: #0d0d1f;
-    --color-surface-2: #13132a;
-    --color-border: rgba(99, 102, 241, 0.15);
-    --color-accent-indigo: #6366f1;
-    --color-accent-cyan: #22d3ee;
-    --color-accent-purple: #a855f7;
-    --color-text-primary: #f1f5f9;
-    --color-text-muted: #64748b;
+  --color-void: #07070f;
+  --color-surface: #0d0d1f;
+  --color-surface-2: #13132a;
+  --color-border: rgba(99, 102, 241, 0.15);
+  --color-accent-indigo: #6366f1;
+  --color-accent-cyan: #22d3ee;
+  --color-accent-purple: #a855f7;
+  --color-text-primary: #f1f5f9;
+  --color-text-muted: #64748b;
 }
 
 *,
 *::before,
 *::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 html {
-    scroll-behavior: smooth;
-    font-size: 16px;
+  scroll-behavior: smooth;
+  font-size: 16px;
 }
 
 body {
-    background-color: #07070f;
-    color: #f1f5f9;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    overflow-x: hidden;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    min-width: 320px;
-    min-height: 100vh;
+  background-color: #07070f;
+  color: #f1f5f9;
+  font-family:
+    'Inter',
+    system-ui,
+    -apple-system,
+    sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-width: 320px;
+  min-height: 100vh;
 }
 
 a {
-    text-decoration: none;
-    color: inherit;
+  text-decoration: none;
+  color: inherit;
 }
 
 /* Scrollbar */
 ::-webkit-scrollbar {
-    width: 5px;
+  width: 5px;
 }
 
 ::-webkit-scrollbar-track {
-    background: #07070f;
+  background: #07070f;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #6366f1;
-    border-radius: 3px;
+  background: #6366f1;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #22d3ee;
+  background: #22d3ee;
 }
 
 /* Section layout helper */
 section {
-    position: relative;
-    z-index: 10;
+  position: relative;
+  z-index: 10;
 }
 
 /* Glass card */
 .glass {
-    background: rgba(13, 13, 31, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(99, 102, 241, 0.15);
-    border-radius: 16px;
+  background: rgba(13, 13, 31, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(99, 102, 241, 0.15);
+  border-radius: 16px;
 }
 
 /* Gradient text */
 .gradient-text {
-    background: linear-gradient(135deg, #6366f1 0%, #22d3ee 50%, #a855f7 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+  background: linear-gradient(135deg, #6366f1 0%, #22d3ee 50%, #a855f7 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 /* Glow button */
 .btn-primary {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 28px;
-    background: linear-gradient(135deg, #6366f1, #a855f7);
-    border: none;
-    border-radius: 8px;
-    color: #fff;
-    font-family: inherit;
-    font-weight: 600;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
 }
 
 .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0 30px rgba(99, 102, 241, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 0 30px rgba(99, 102, 241, 0.5);
 }
 
 .btn-secondary {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 28px;
-    background: transparent;
-    border: 1px solid rgba(99, 102, 241, 0.4);
-    border-radius: 8px;
-    color: #f1f5f9;
-    font-family: inherit;
-    font-weight: 600;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  background: transparent;
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  border-radius: 8px;
+  color: #f1f5f9;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .btn-secondary:hover {
-    border-color: #22d3ee;
-    color: #22d3ee;
-    transform: translateY(-2px);
+  border-color: #22d3ee;
+  color: #22d3ee;
+  transform: translateY(-2px);
 }

@@ -2,14 +2,14 @@ import { COLORS } from '../../constants/colors'
 import type { ReactNode } from 'react'
 
 interface SocialIconLinkProps {
-    href: string
-    icon: ReactNode
-    /** Accessible label for screen readers. */
-    label: string
-    /** Color the icon transitions to on hover. Defaults to textPrimary. */
-    hoverColor?: string
-    /** Whether to open in a new tab (default: true). */
-    newTab?: boolean
+  href: string
+  icon: ReactNode
+  /** Accessible label for screen readers. */
+  label: string
+  /** Color the icon transitions to on hover. Defaults to textPrimary. */
+  hoverColor?: string
+  /** Whether to open in a new tab (default: true). */
+  newTab?: boolean
 }
 
 /**
@@ -21,30 +21,30 @@ interface SocialIconLinkProps {
  * handles the color change without JS state.
  */
 export function SocialIconLink({
-    href,
-    icon,
-    label,
-    hoverColor = COLORS.textPrimary,
-    newTab = true,
+  href,
+  icon,
+  label,
+  hoverColor = COLORS.textPrimary,
+  newTab = true,
 }: SocialIconLinkProps) {
-    return (
-        <a
-            href={href}
-            aria-label={label}
-            target={newTab ? '_blank' : undefined}
-            rel={newTab ? 'noopener noreferrer' : undefined}
-            className="social-icon-link"
-            style={
-                {
-                    color: COLORS.textMuted,
-                    display: 'flex',
-                    alignItems: 'center',
-                    '--hover-color': hoverColor,
-                } as React.CSSProperties
-            }
-        >
-            {icon}
-            <style>{`
+  return (
+    <a
+      href={href}
+      aria-label={label}
+      target={newTab ? '_blank' : undefined}
+      rel={newTab ? 'noopener noreferrer' : undefined}
+      className="social-icon-link"
+      style={
+        {
+          color: COLORS.textMuted,
+          display: 'flex',
+          alignItems: 'center',
+          '--hover-color': hoverColor,
+        } as React.CSSProperties
+      }
+    >
+      {icon}
+      <style>{`
                 .social-icon-link {
                     transition: color 0.2s;
                 }
@@ -52,6 +52,6 @@ export function SocialIconLink({
                     color: var(--hover-color) !important;
                 }
             `}</style>
-        </a>
-    )
+    </a>
+  )
 }

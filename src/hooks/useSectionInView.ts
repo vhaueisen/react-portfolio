@@ -10,11 +10,9 @@ import { useRef } from 'react'
  * const [ref, inView] = useSectionInView<HTMLDivElement>()
  * ```
  */
-export function useSectionInView<T extends Element = HTMLDivElement>(
-    margin = '-80px',
-) {
-    const ref = useRef<T>(null)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const inView = useInView(ref, { once: true, margin: margin as any })
-    return [ref, inView] as const
+export function useSectionInView<T extends Element = HTMLDivElement>(margin = '-80px') {
+  const ref = useRef<T>(null)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const inView = useInView(ref, { once: true, margin: margin as any })
+  return [ref, inView] as const
 }

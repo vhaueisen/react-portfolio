@@ -7,17 +7,17 @@ export const ITEM_HEIGHT = 110
 export const SCROLL_PER_ITEM = 320
 
 interface ScrollDrumState<T extends Element> {
-    /** Ref to attach to the outer tall scroll-track container. */
-    scrollTrackRef: React.RefObject<T | null>
-    /**
-     * Fractional position in the list (e.g. 1.7 = between item 1 and 2).
-     * Used to compute perspective-tilt offsets.
-     */
-    drumPos: number
-    /** Rounded index — the currently "active" list item. */
-    selectedIndex: number
-    /** Total number of items (passed in so the hook can clamp correctly). */
-    itemCount: number
+  /** Ref to attach to the outer tall scroll-track container. */
+  scrollTrackRef: React.RefObject<T | null>
+  /**
+   * Fractional position in the list (e.g. 1.7 = between item 1 and 2).
+   * Used to compute perspective-tilt offsets.
+   */
+  drumPos: number
+  /** Rounded index — the currently "active" list item. */
+  selectedIndex: number
+  /** Total number of items (passed in so the hook can clamp correctly). */
+  itemCount: number
 }
 
 /**
@@ -30,24 +30,24 @@ interface ScrollDrumState<T extends Element> {
  * @param itemCount - Number of items in the list being scrolled through.
  */
 export function useScrollDrum<T extends HTMLElement = HTMLDivElement>(
-    itemCount: number,
+  itemCount: number
 ): ScrollDrumState<T> {
-    const scrollTrackRef = useRef<T>(null)
-    const [selectedIndex, setSelectedIndex] = useState(0)
-    const [drumPos, setDrumPos] = useState(0)
+  const scrollTrackRef = useRef<T>(null)
+  const [selectedIndex, setSelectedIndex] = useState(0)
+  const [drumPos, setDrumPos] = useState(0)
 
-    const { scrollYProgress } = useScroll({
-        target: scrollTrackRef as React.RefObject<HTMLElement>,
-        offset: ['start start', 'end end'],
+  const { scrollYProgress } = useScroll({
+    target: scrollTrackRef as React.RefObject<HTMLElement>,
+    offset: ['start start', 'end end'],
+  })
+
+  useEffect(() => {
+    return scrollYProgress.on('change', (v) => {
+      const pos = Math.max(0, Math.min(itemCount - 1, v * (itemCount - 1)))
+      setDrumPos(pos)
+      setSelectedIndex(Math.round(pos))
     })
+  }, [scrollYProgress, itemCount])
 
-    useEffect(() => {
-        return scrollYProgress.on('change', (v) => {
-            const pos = Math.max(0, Math.min(itemCount - 1, v * (itemCount - 1)))
-            setDrumPos(pos)
-            setSelectedIndex(Math.round(pos))
-        })
-    }, [scrollYProgress, itemCount])
-
-    return { scrollTrackRef, selectedIndex, drumPos, itemCount }
+  return { scrollTrackRef, selectedIndex, drumPos, itemCount }
 }
