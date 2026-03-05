@@ -1,77 +1,107 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, ReactNode } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { FiGithub, FiExternalLink } from 'react-icons/fi'
+import { SiGoogleplay, SiAppstore } from 'react-icons/si'
+import {
+    TbStethoscope,
+    TbAugmentedReality,
+    TbCube,
+    TbBus,
+    TbRocket,
+    TbLink,
+} from 'react-icons/tb'
 
 type Category = 'All' | 'Mobile' | '3D / AR' | 'Web'
 
-const PROJECTS = [
-    {
-        id: 'plantao',
-        name: '🩺 Plantão 360',
-        description:
-            'Full-featured React Native app for doctors to manage shifts, finances, and documents. Includes 60+ analytics events, Fastlane CI/CD, and Firebase backend.',
-        categories: ['Mobile'] as Category[],
-        tags: ['React Native', 'Expo', 'Firebase', 'Fastlane', 'TypeScript'],
-        github: 'https://github.com/vhaueisen/plantao-360',
-        featured: true,
-        color: '#6366f1',
-    },
-    {
-        id: 'vale-ra',
-        name: '📱 Vale RA',
-        description:
-            'Augmented Reality mobile app built in Unity for Vale S.A. — immersive 3D maintenance training with QR code model loading and cross-platform AR support.',
-        categories: ['3D / AR'] as Category[],
-        tags: ['Unity', 'C#', 'ARFoundation', 'Android', 'iOS'],
-        github: 'https://github.com/vhaueisen/vale-ra',
-        featured: true,
-        color: '#22d3ee',
-    },
-    {
-        id: 'bulli',
-        name: '🚐 Build-Your-Bulli',
-        description:
-            'Interactive 3D browser configurator for VW T1 camper vans. Real-time model swapping, live WebGL previews, PDF export, and email delivery via Node.js.',
-        categories: ['3D / AR', 'Web'] as Category[],
-        tags: ['React', 'Three.js', 'Node.js', 'jsPDF', 'Webpack'],
-        github: 'https://github.com/vhaueisen/build-your-bulli',
-        featured: true,
-        color: '#a855f7',
-    },
-    {
-        id: 'rogueunit',
-        name: '🛰️ Rogueunit.gg',
-        description:
-            'Official studio website for Rogue Unit — animated carousels, project case studies, and contact forms. Built with SvelteKit and smooth transitions.',
-        categories: ['Web'] as Category[],
-        tags: ['SvelteKit', 'TypeScript', 'Vite', 'CSS'],
-        github: 'https://github.com/vhaueisen/rogueunit-gg',
-        featured: false,
-        color: '#6366f1',
-    },
-    {
-        id: 'realink',
-        name: '🔗 Realink.io',
-        description:
-            'Institutional SvelteKit website with Gmail OAuth integration, rate-limited quote forms, product pages, and modular content system.',
-        categories: ['Web'] as Category[],
-        tags: ['SvelteKit', 'Gmail API', 'OAuth', 'Vite', 'JavaScript'],
-        github: 'https://github.com/vhaueisen/realink-io',
-        featured: false,
-        color: '#22d3ee',
-    },
-    {
-        id: 'iall',
-        name: '🔍 Inspection Routes',
-        description:
-            'QR code-powered field inspection app for IndustriALL. Operators scan equipment QR codes to access checklists, answer structured forms, and submit reports.',
-        categories: ['Mobile'] as Category[],
-        tags: ['Angular', 'Ionic', 'TypeScript', 'REST API'],
-        github: 'https://github.com/vhaueisen/Desafio-iAll',
-        featured: false,
-        color: '#a855f7',
-    },
-]
+const PROJECTS: {
+    id: string
+    name: string
+    icon: ReactNode
+    description: string
+    categories: Category[]
+    tags: string[]
+    github?: string
+    link?: string
+    playStore?: string
+    appStore?: string
+    featured: boolean
+    color: string
+}[] = [
+        {
+            id: 'plantao',
+            name: 'Plantão 360',
+            icon: <TbStethoscope size={22} />,
+            description:
+                'Full-featured React Native app for doctors to manage shifts, finances, and documents. Includes 60+ analytics events, Fastlane CI/CD, and Firebase backend.',
+            categories: ['Mobile'],
+            tags: ['React Native', 'Expo', 'Firebase', 'Fastlane', 'TypeScript'],
+            github: 'https://github.com/vhaueisen/plantao-360',
+            playStore: 'https://play.google.com/store/apps/details?id=com.medfinance.plantao360',
+            appStore: 'https://apps.apple.com/br/app/plant%C3%A3o-360/id6748095218',
+            featured: true,
+            color: '#6366f1',
+        },
+        {
+            id: 'nestle-surpresa',
+            name: 'Nestlé Surpresa RA',
+            icon: <TbAugmentedReality size={22} />,
+            description:
+                'Branded web AR experience for Nestlé Chocolates — users scan packaging to bring 6 collectible Brazilian wildlife animals to life in augmented reality, paired with a Roblox integration.',
+            categories: ['3D / AR', 'Web'],
+            tags: ['Web AR', 'React', 'Three.js', 'Nestlé', 'Roblox'],
+            link: 'https://amostras.euqueronestle.com.br/sites/chocolates/surpresa-ra/',
+            featured: true,
+            color: '#22d3ee',
+        },
+        {
+            id: 'vale-ra',
+            name: 'Vale RA',
+            icon: <TbCube size={22} />,
+            description:
+                'Augmented Reality mobile app built in Unity for Vale S.A. — immersive 3D maintenance training with QR code model loading and cross-platform AR support.',
+            categories: ['3D / AR'],
+            tags: ['Unity', 'C#', 'ARFoundation', 'Android', 'iOS'],
+            github: 'https://github.com/vhaueisen/vale-ra',
+            featured: true,
+            color: '#22d3ee',
+        },
+        {
+            id: 'bulli',
+            name: 'Build-Your-Bulli',
+            icon: <TbBus size={22} />,
+            description:
+                'Interactive 3D browser configurator for VW T1 camper vans. Real-time model swapping, live WebGL previews, PDF export, and email delivery via Node.js.',
+            categories: ['3D / AR', 'Web'],
+            tags: ['React', 'Three.js', 'Node.js', 'jsPDF', 'Webpack'],
+            github: 'https://github.com/vhaueisen/build-your-bulli',
+            featured: true,
+            color: '#a855f7',
+        },
+        {
+            id: 'rogueunit',
+            name: 'Rogueunit.gg',
+            icon: <TbRocket size={22} />,
+            description:
+                'Official studio website for Rogue Unit — animated carousels, project case studies, and contact forms. Built with SvelteKit and smooth transitions.',
+            categories: ['Web'],
+            tags: ['SvelteKit', 'TypeScript', 'Vite', 'CSS'],
+            github: 'https://github.com/vhaueisen/rogueunit-gg',
+            featured: false,
+            color: '#6366f1',
+        },
+        {
+            id: 'realink',
+            name: 'Realink.io',
+            icon: <TbLink size={22} />,
+            description:
+                'Institutional SvelteKit website with Gmail OAuth integration, rate-limited quote forms, product pages, and modular content system.',
+            categories: ['Web'],
+            tags: ['SvelteKit', 'Gmail API', 'OAuth', 'Vite', 'JavaScript'],
+            github: 'https://github.com/vhaueisen/realink-io',
+            featured: false,
+            color: '#22d3ee',
+        },
+    ]
 
 const TABS: Category[] = ['All', 'Mobile', '3D / AR', 'Web']
 
@@ -120,16 +150,42 @@ function ProjectCard({ project, index }: { project: (typeof PROJECTS)[number]; i
             />
 
             <div>
-                <h3
+                <div
                     style={{
-                        fontSize: '1.1rem',
-                        fontWeight: 700,
-                        color: '#f1f5f9',
-                        marginBottom: '8px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                        marginBottom: '12px',
                     }}
                 >
-                    {project.name}
-                </h3>
+                    <span
+                        style={{
+                            width: '40px',
+                            height: '40px',
+                            borderRadius: '10px',
+                            background: `${project.color}15`,
+                            border: `1px solid ${project.color}30`,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: project.color,
+                            flexShrink: 0,
+                            transition: 'background 0.3s, border-color 0.3s',
+                        }}
+                    >
+                        {project.icon}
+                    </span>
+                    <h3
+                        style={{
+                            fontSize: '1.05rem',
+                            fontWeight: 700,
+                            color: '#f1f5f9',
+                            margin: 0,
+                        }}
+                    >
+                        {project.name}
+                    </h3>
+                </div>
                 <p style={{ fontSize: '0.875rem', color: '#94a3b8', lineHeight: 1.65 }}>
                     {project.description}
                 </p>
@@ -156,46 +212,92 @@ function ProjectCard({ project, index }: { project: (typeof PROJECTS)[number]; i
             </div>
 
             {/* Link */}
-            <div style={{ display: 'flex', gap: '12px', paddingTop: '8px', borderTop: '1px solid rgba(255,255,255,0.04)' }}>
-                <a
-                    href={project.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        fontSize: '0.8rem',
-                        color: '#64748b',
-                        fontWeight: 500,
-                        transition: 'color 0.2s',
-                    }}
-                    onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = '#f1f5f9')}
-                    onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = '#64748b')}
-                >
-                    <FiGithub size={14} />
-                    View Code
-                </a>
-                <a
-                    href={project.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        fontSize: '0.8rem',
-                        color: project.color,
-                        fontWeight: 500,
-                        marginLeft: 'auto',
-                        transition: 'opacity 0.2s',
-                    }}
-                    onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.opacity = '0.7')}
-                    onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.opacity = '1')}
-                >
-                    <FiExternalLink size={13} />
-                    GitHub
-                </a>
+            <div style={{ display: 'flex', gap: '12px', paddingTop: '8px', borderTop: '1px solid rgba(255,255,255,0.04)', flexWrap: 'wrap' }}>
+                {project.github && (
+                    <a
+                        href={project.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            fontSize: '0.8rem',
+                            color: '#64748b',
+                            fontWeight: 500,
+                            transition: 'color 0.2s',
+                        }}
+                        onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = '#f1f5f9')}
+                        onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = '#64748b')}
+                    >
+                        <FiGithub size={14} />
+                        View Code
+                    </a>
+                )}
+                {project.playStore && (
+                    <a
+                        href={project.playStore}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            fontSize: '0.8rem',
+                            color: '#64748b',
+                            fontWeight: 500,
+                            transition: 'color 0.2s',
+                        }}
+                        onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = '#34d399')}
+                        onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = '#64748b')}
+                    >
+                        <SiGoogleplay size={13} />
+                        Google Play
+                    </a>
+                )}
+                {project.appStore && (
+                    <a
+                        href={project.appStore}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            fontSize: '0.8rem',
+                            color: '#64748b',
+                            fontWeight: 500,
+                            marginLeft: 'auto',
+                            transition: 'color 0.2s',
+                        }}
+                        onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = '#60a5fa')}
+                        onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = '#64748b')}
+                    >
+                        <SiAppstore size={13} />
+                        App Store
+                    </a>
+                )}
+                {project.link && !project.github && (
+                    <a
+                        href={project.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            fontSize: '0.8rem',
+                            color: project.color,
+                            fontWeight: 600,
+                            transition: 'opacity 0.2s',
+                        }}
+                        onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.opacity = '0.7')}
+                        onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.opacity = '1')}
+                    >
+                        <FiExternalLink size={14} />
+                        Visit Live
+                    </a>
+                )}
             </div>
         </motion.div>
     )

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 
 const NAV_LINKS = [
     { label: 'About', href: '#about' },
@@ -12,11 +12,48 @@ const NAV_LINKS = [
 export default function Navbar() {
     const [scrolled, setScrolled] = useState(false)
     const [mobileOpen, setMobileOpen] = useState(false)
+    const [activeSection, setActiveSection] = useState<string | null>(null)
 
     useEffect(() => {
+        // Scroll background
         const handleScroll = () => setScrolled(window.scrollY > 20)
-        window.addEventListener('scroll', handleScroll)
-        return () => window.removeEventListener('scroll', handleScroll)
+        window.addEventListener('scroll', handleScroll, { passive: true })
+
+        // Active section tracking via IntersectionObserver — no flickering at boundaries
+        // rootMargin creates a detection strip from 15% to 25% from the top of the viewport,
+        // so only the section currently filling that zone is considered "active".
+        const intersecting = new Set<string>()
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        intersecting.add(entry.target.id)
+                    } else {
+                        intersecting.delete(entry.target.id)
+                    }
+                })
+                // Pick the first (topmost) nav section that's visible in the detection zone
+                const active = NAV_LINKS.find((l) =>
+                    intersecting.has(l.href.replace('#', ''))
+                )
+                setActiveSection(active ? active.href.replace('#', '') : null)
+            },
+            {
+                rootMargin: '-15% 0px -75% 0px',
+                threshold: 0,
+            }
+        )
+
+        NAV_LINKS.forEach((link) => {
+            const el = document.querySelector(link.href)
+            if (el) observer.observe(el)
+        })
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll)
+            observer.disconnect()
+        }
     }, [])
 
     const handleNavClick = (href: string) => {
@@ -78,30 +115,58 @@ export default function Navbar() {
                 }}
                 className="hidden-mobile"
             >
-                {NAV_LINKS.map((link) => (
-                    <button
-                        key={link.href}
-                        onClick={() => handleNavClick(link.href)}
-                        style={{
-                            background: 'none',
-                            border: 'none',
-                            color: '#94a3b8',
-                            fontSize: '0.875rem',
-                            fontWeight: 500,
-                            cursor: 'pointer',
-                            transition: 'color 0.2s',
-                            padding: '4px 0',
-                        }}
-                        onMouseEnter={(e) =>
-                            ((e.target as HTMLButtonElement).style.color = '#f1f5f9')
-                        }
-                        onMouseLeave={(e) =>
-                            ((e.target as HTMLButtonElement).style.color = '#94a3b8')
-                        }
-                    >
-                        {link.label}
-                    </button>
-                ))}
+                {NAV_LINKS.map((link) => {
+                    const isActive = activeSection === link.href.replace('#', '')
+                    return (
+                        <button
+                            key={link.href}
+                            onClick={() => handleNavClick(link.href)}
+                            style={{
+                                background: 'none',
+                                border: 'none',
+                                color: isActive ? '#f1f5f9' : '#64748b',
+                                fontSize: '0.875rem',
+                                fontWeight: isActive ? 600 : 500,
+                                cursor: 'pointer',
+                                padding: '4px 0',
+                                position: 'relative',
+                                transition: 'color 0.25s, font-weight 0.25s',
+                                fontFamily: 'inherit',
+                            }}
+                            onMouseEnter={(e) =>
+                                ((e.currentTarget as HTMLButtonElement).style.color = '#f1f5f9')
+                            }
+                            onMouseLeave={(e) =>
+                            ((e.currentTarget as HTMLButtonElement).style.color =
+                                isActive ? '#f1f5f9' : '#64748b')
+                            }
+                        >
+                            {link.label}
+                            <AnimatePresence>
+                                {isActive && (
+                                    <motion.span
+                                        layoutId="nav-underline"
+                                        initial={{ opacity: 0, scaleX: 0 }}
+                                        animate={{ opacity: 1, scaleX: 1 }}
+                                        exit={{ opacity: 0, scaleX: 0 }}
+                                        transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                                        style={{
+                                            position: 'absolute',
+                                            bottom: -2,
+                                            left: 0,
+                                            right: 0,
+                                            height: '2px',
+                                            background:
+                                                'linear-gradient(90deg, #6366f1, #22d3ee)',
+                                            borderRadius: '1px',
+                                            transformOrigin: 'left',
+                                        }}
+                                    />
+                                )}
+                            </AnimatePresence>
+                        </button>
+                    )
+                })}
                 <a
                     href="/cv.pdf"
                     download
@@ -167,25 +232,44 @@ export default function Navbar() {
                         gap: '8px',
                     }}
                 >
-                    {NAV_LINKS.map((link) => (
-                        <button
-                            key={link.href}
-                            onClick={() => handleNavClick(link.href)}
-                            style={{
-                                background: 'none',
-                                border: 'none',
-                                color: '#94a3b8',
-                                fontSize: '1rem',
-                                fontWeight: 500,
-                                cursor: 'pointer',
-                                textAlign: 'left',
-                                padding: '12px 0',
-                                borderBottom: '1px solid rgba(99,102,241,0.1)',
-                            }}
-                        >
-                            {link.label}
-                        </button>
-                    ))}
+                    {NAV_LINKS.map((link) => {
+                        const isActive = activeSection === link.href.replace('#', '')
+                        return (
+                            <button
+                                key={link.href}
+                                onClick={() => handleNavClick(link.href)}
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    color: isActive ? '#f1f5f9' : '#64748b',
+                                    fontSize: '1rem',
+                                    fontWeight: isActive ? 600 : 500,
+                                    cursor: 'pointer',
+                                    textAlign: 'left',
+                                    padding: '12px 0',
+                                    borderBottom: '1px solid rgba(99,102,241,0.1)',
+                                    fontFamily: 'inherit',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    transition: 'color 0.2s',
+                                }}
+                            >
+                                {isActive && (
+                                    <span
+                                        style={{
+                                            width: '4px',
+                                            height: '4px',
+                                            borderRadius: '50%',
+                                            background: '#6366f1',
+                                            flexShrink: 0,
+                                        }}
+                                    />
+                                )}
+                                {link.label}
+                            </button>
+                        )
+                    })}
                 </motion.div>
             )}
 
