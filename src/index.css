@@ -1,284 +1,263 @@
-:root {
-    --color-void: #07070f;
-    --color-surface: #0d0d1f;
-    --color-surface-2: #13132a;
-    --color-surface-glass: rgba(13, 13, 31, 0.7);
-    --color-surface-glass-dark: rgba(13, 13, 31, 0.85);
-    --color-border: rgba(99, 102, 241, 0.15);
-    --color-border-subtle: rgba(99, 102, 241, 0.12);
-    --color-accent-indigo: #6366f1;
-    --color-accent-cyan: #22d3ee;
-    --color-accent-purple: #a855f7;
-    --color-text-primary: #f1f5f9;
-    --color-text-muted: #64748b;
-    --color-text-sub: #94a3b8;
-    --color-google-play: #34d399;
-    --color-app-store: #60a5fa;
-    --color-slate-800: #1e293b;
-    --color-slate-700: #334155;
-    --color-slate-600: #475569;
+@import 'tailwindcss';
+
+@theme {
+  --color-void: #07070f;
+  --color-surface: #0d0d1f;
+  --color-surface-2: #13132a;
+  --color-surface-glass: rgba(13, 13, 31, 0.7);
+  --color-surface-glass-dark: rgba(13, 13, 31, 0.85);
+  --color-border: rgba(99, 102, 241, 0.15);
+  --color-border-subtle: rgba(99, 102, 241, 0.12);
+  --color-accent-indigo: #6366f1;
+  --color-accent-cyan: #22d3ee;
+  --color-accent-purple: #a855f7;
+  --color-text-primary: #f1f5f9;
+  --color-text-muted: #64748b;
+  --color-text-sub: #94a3b8;
+  --color-google-play: #34d399;
+  --color-app-store: #60a5fa;
+  --color-slate-800: #1e293b;
+  --color-slate-700: #334155;
+  --color-slate-600: #475569;
 }
 
 *,
 *::before,
 *::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 html {
-    scroll-behavior: smooth;
-    font-size: 16px;
+  scroll-behavior: smooth;
+  font-size: 16px;
 }
 
 body {
-    background-color: var(--color-void);
-    color: var(--color-text-primary);
-    font-family:
-        'Inter',
-        system-ui,
-        -apple-system,
-        sans-serif;
-    overflow-x: hidden;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    min-width: 320px;
-    min-height: 100vh;
+  background-color: var(--color-void);
+  color: var(--color-text-primary);
+  font-family:
+    'Inter',
+    system-ui,
+    -apple-system,
+    sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-width: 320px;
+  min-height: 100vh;
 }
 
 a {
-    text-decoration: none;
-    color: inherit;
+  text-decoration: none;
+  color: inherit;
 }
 
 /* Scrollbar */
 ::-webkit-scrollbar {
-    width: 5px;
+  width: 5px;
 }
 
 ::-webkit-scrollbar-track {
-    background: #07070f;
+  background: #07070f;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #6366f1;
-    border-radius: 3px;
+  background: #6366f1;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #22d3ee;
+  background: #22d3ee;
 }
 
 /* Section layout helper */
 section {
-    position: relative;
-    z-index: 10;
+  position: relative;
+  z-index: 10;
 }
 
 /* Glass card */
 .glass {
-    background: var(--color-surface-glass);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--color-border);
-    border-radius: 16px;
+  background: var(--color-surface-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
 }
 
 /* Gradient text */
 .gradient-text {
-    background: linear-gradient(135deg,
-            var(--color-accent-indigo) 0%,
-            var(--color-accent-cyan) 50%,
-            var(--color-accent-purple) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+  background: linear-gradient(
+    135deg,
+    var(--color-accent-indigo) 0%,
+    var(--color-accent-cyan) 50%,
+    var(--color-accent-purple) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 /* Glow button */
 .btn-primary {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 28px;
-    background: linear-gradient(135deg, var(--color-accent-indigo), var(--color-accent-purple));
-    border: none;
-    border-radius: 8px;
-    color: #fff;
-    font-family: inherit;
-    font-weight: 600;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  background: linear-gradient(135deg, var(--color-accent-indigo), var(--color-accent-purple));
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
 }
 
 .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0 30px rgba(99, 102, 241, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 0 30px rgba(99, 102, 241, 0.5);
 }
 
 .btn-secondary {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 28px;
-    background: transparent;
-    border: 1px solid rgba(99, 102, 241, 0.4);
-    border-radius: 8px;
-    color: var(--color-text-primary);
-    font-family: inherit;
-    font-weight: 600;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  background: transparent;
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  border-radius: 8px;
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .btn-secondary:hover {
-    border-color: var(--color-accent-cyan);
-    color: var(--color-accent-cyan);
-    transform: translateY(-2px);
+  border-color: var(--color-accent-cyan);
+  color: var(--color-accent-cyan);
+  transform: translateY(-2px);
 }
 
 /* ─── Navbar link & button hover states ─────────────────────────────────────── */
 /* Hover colors reference @theme tokens so they stay in sync with COLORS. */
 
 .nav-link:hover {
-    color: var(--color-text-primary) !important;
+  color: var(--color-text-primary) !important;
 }
 
 .nav-mobile-link:hover {
-    color: var(--color-text-primary) !important;
+  color: var(--color-text-primary) !important;
 }
 
 .nav-resume-btn:hover {
-    background: rgba(99, 102, 241, 0.1) !important;
-    border-color: var(--color-accent-indigo) !important;
+  background: rgba(99, 102, 241, 0.1) !important;
+  border-color: var(--color-accent-indigo) !important;
 }
 
 /* ─── Navbar responsive visibility ──────────────────────────────────────────── */
 
 .nav-desktop {
-    display: flex;
+  display: flex;
 }
 
 .nav-mobile-toggle {
-    display: none;
+  display: none;
 }
 
 @media (max-width: 768px) {
-    .nav-desktop {
-        display: none !important;
-    }
+  .nav-desktop {
+    display: none !important;
+  }
 
-    .nav-mobile-toggle {
-        display: block !important;
-    }
+  .nav-mobile-toggle {
+    display: block !important;
+  }
 }
 
 /* ─── Hero section layout ────────────────────────────────────────────────── */
 
 .hero-text {
-    flex: 0 0 55%;
+  flex: 0 0 55%;
 }
 
 @media (max-width: 899px) {
-    .hero-text {
-        flex: 1 1 100%;
-    }
+  .hero-text {
+    flex: 1 1 100%;
+  }
 }
 
 @media (min-width: 900px) {
-    .hero-canvas-wrapper {
-        display: block !important;
-    }
+  .hero-canvas-wrapper {
+    display: block !important;
+  }
 }
 
 @keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
 
-    0%,
-    100% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: 0.4;
-    }
+  50% {
+    opacity: 0.4;
+  }
 }
 
 /* ─── Social icon links ────────────────────────────────────────────────── */
 /* Hover color is driven by the --hover-color CSS custom property set inline. */
 
 .social-icon-link {
-    transition: color 0.2s;
+  transition: color 0.2s;
 }
 
 .social-icon-link:hover {
-    color: var(--hover-color) !important;
+  color: var(--hover-color) !important;
 }
 
 /* ─── Project card link rows ────────────────────────────────────────────── */
 /* Hover colors reference @theme tokens — no raw hex values outside @theme. */
 
 .project-link {
-    transition: color 0.2s;
+  transition: color 0.2s;
 }
 
 .project-link:hover {
-    color: var(--color-text-primary) !important;
+  color: var(--color-text-primary) !important;
 }
 
 .project-link--play:hover {
-    color: var(--color-google-play) !important;
+  color: var(--color-google-play) !important;
 }
 
 .project-link--appstore:hover {
-    color: var(--color-app-store) !important;
-}
-
-/* ─── About section ─────────────────────────────────────────────────────── */
-/* Store link hover states consume per-instance CSS custom properties set   */
-/* as inline style props in About.tsx — no JS event handlers needed.        */
-
-.store-link-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 18px;
-    border-radius: 12px;
-    text-decoration: none;
-    flex: 1 1 160px;
-    background: var(--store-bg);
-    border: 1px solid var(--store-border);
-    transition: background 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s;
-}
-
-.store-link-btn:hover {
-    background: var(--store-bg-hover) !important;
-    border-color: var(--store-border-hover) !important;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px var(--store-shadow);
+  color: var(--color-app-store) !important;
 }
 
 /* ─── Contact section layout ────────────────────────────────────────────── */
 
 .contact-section {
-    padding: 100px 24px 140px;
+  padding: 100px 24px 140px;
 }
 
 .contact-footer-note {
-    margin-top: 80px;
+  margin-top: 80px;
 }
 
 @media (max-width: 768px) {
-    .contact-section {
-        padding: 60px 24px 60px;
-    }
+  .contact-section {
+    padding: 60px 24px 60px;
+  }
 
-    .contact-footer-note {
-        margin-top: 40px;
-    }
+  .contact-footer-note {
+    margin-top: 40px;
+  }
 }
 
 /* ─── Experience section layout ──────────────────────────────────────────── */
@@ -286,25 +265,25 @@ section {
 /* These classes are applied by Experience.tsx; responsive overrides live here. */
 
 .exp-grid {
-    grid-template-columns: minmax(220px, 300px) 1fr;
-    gap: 48px;
+  grid-template-columns: minmax(220px, 300px) 1fr;
+  gap: 48px;
 }
 
 .exp-timeline-horiz {
-    display: none;
+  display: none;
 }
 
 @media (max-width: 899px) {
-    .exp-grid {
-        grid-template-columns: 1fr !important;
-        gap: 20px !important;
-    }
+  .exp-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
 
-    .exp-timeline-vert {
-        display: none;
-    }
+  .exp-timeline-vert {
+    display: none;
+  }
 
-    .exp-timeline-horiz {
-        display: block;
-    }
+  .exp-timeline-horiz {
+    display: block;
+  }
 }

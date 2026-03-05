@@ -11,203 +11,208 @@ import { heroBadge, heroNameGradient } from '../styles'
 const NAME_CHARS = 'VITOR HAUEISEN'.split('')
 
 const containerVariants = {
-    hidden: {},
-    visible: {
-        transition: { staggerChildren: 0.04, delayChildren: 0.4 },
-    },
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.04, delayChildren: 0.4 },
+  },
 }
 
 const charVariants = {
-    hidden: { opacity: 0, y: 60, rotateX: -90 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        rotateX: 0,
-        transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
-    },
+  hidden: { opacity: 0, y: 60, rotateX: -90 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    rotateX: 0,
+    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
+  },
 }
 
 export default function Hero() {
-    return (
-        <section
-            id="hero"
-            style={{
-                minHeight: '100vh',
-                display: 'flex',
-                alignItems: 'center',
-                padding: '0 24px',
-                paddingTop: '80px',
-                maxWidth: '1280px',
-                margin: '0 auto',
-                gap: '48px',
-                position: 'relative',
-            }}
+  return (
+    <section
+      id="hero"
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        padding: '0 24px',
+        paddingTop: '80px',
+        maxWidth: '1280px',
+        margin: '0 auto',
+        gap: '48px',
+        position: 'relative',
+      }}
+    >
+      {/* Left: text content */}
+      <div style={{ flex: 1, zIndex: 2, position: 'relative' }}>
+        {/* Badge */}
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          style={heroBadge}
         >
-            {/* Left: text content */}
-            <div style={{ flex: 1, zIndex: 2, position: 'relative' }}>
-                {/* Badge */}
-                <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
-                    style={heroBadge}
-                >
-                    <span
-                        style={{
-                            width: '6px',
-                            height: '6px',
-                            borderRadius: '50%',
-                            background: COLORS.cyan,
-                            animation: 'pulse 2s infinite',
-                        }}
-                    />
-                    Available for US Remote Roles
-                </motion.div>
+          <span
+            style={{
+              width: '6px',
+              height: '6px',
+              borderRadius: '50%',
+              background: COLORS.cyan,
+              animation: 'pulse 2s infinite',
+            }}
+          />
+          Available for US Remote Roles
+        </motion.div>
 
-                {/* Animated name */}
-                <motion.div
-                    variants={containerVariants}
-                    initial="hidden"
-                    animate="visible"
-                    style={{
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                        fontSize: 'clamp(1.5rem, 9vw, 4.5rem)',
-                        fontWeight: 900,
-                        lineHeight: 1,
-                        letterSpacing: '-0.04em',
-                        marginBottom: '24px',
-                        perspective: '600px',
-                    }}
-                >
-                    {NAME_CHARS.map((char, i) => (
-                        <motion.span
-                            key={i}
-                            variants={charVariants}
-                            style={{
-                                ...heroNameGradient,
-                                whiteSpace: char === ' ' ? 'pre' : 'normal',
-                                minWidth: char === ' ' ? '0.35em' : undefined,
-                            }}
-                        >
-                            {char}
-                        </motion.span>
-                    ))}
-                </motion.div>
-
-                {/* Subtitle */}
-                <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.9 }}
-                    style={{
-                        fontSize: 'clamp(1rem, 2.5vw, 1.25rem)',
-                        color: COLORS.textSub,
-                        lineHeight: 1.6,
-                        marginBottom: '16px',
-                        maxWidth: '520px',
-                    }}
-                >
-                    Senior Mobile Engineer · React Native · Interactive 3D
-                </motion.p>
-
-                <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 1.0 }}
-                    style={{
-                        fontSize: '0.95rem',
-                        color: COLORS.textMuted,
-                        lineHeight: 1.6,
-                        marginBottom: '40px',
-                        maxWidth: '480px',
-                    }}
-                >
-                    7+ years architecting mobile experiences. Former game dev with a passion for performance,
-                    real-time systems, and polished interactive UIs.
-                </motion.p>
-
-                {/* CTAs */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 1.1 }}
-                    style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: '48px' }}
-                >
-                    <button
-                        className="btn-primary"
-                        onClick={() =>
-                            document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' })
-                        }
-                    >
-                        View Projects <FiArrowDown size={16} />
-                    </button>
-                    <a href="mailto:vitorhaueisen@gmail.com" className="btn-secondary">
-                        Get in Touch
-                    </a>
-                </motion.div>
-
-                {/* Social */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.6, delay: 1.3 }}
-                    style={{ display: 'flex', gap: '20px', alignItems: 'center' }}
-                >
-                    <SocialIconLink
-                        href="https://github.com/vhaueisen"
-                        label="GitHub profile"
-                        icon={<FiGithub size={22} />}
-                        hoverColor={COLORS.textPrimary}
-                    />
-                    <SocialIconLink
-                        href="https://linkedin.com/in/vitor-ruas"
-                        label="LinkedIn profile"
-                        icon={<FiLinkedin size={22} />}
-                        hoverColor={COLORS.indigo}
-                    />
-                    <span style={{ color: COLORS.slate800, fontSize: '0.75rem', marginLeft: '4px' }} />
-                </motion.div>
-            </div>
-
-            {/* Right: 3D canvas — absolutely fills the right half, sits behind text */}
-            <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 1, delay: 0.5, ease: 'easeOut' }}
-                style={{
-                    position: 'absolute',
-                    right: 40,
-                    top: 40,
-                    width: 'calc(50% - 40px)',
-                    height: 'calc(100% - 80px)',
-                    display: 'none',
-                    zIndex: 1,
-                    pointerEvents: 'none',
-                }}
-                className="hero-canvas-wrapper"
+        {/* Animated name */}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            fontSize: 'clamp(1.5rem, 9vw, 4.5rem)',
+            fontWeight: 900,
+            lineHeight: 1,
+            letterSpacing: '-0.04em',
+            marginBottom: '24px',
+            perspective: '600px',
+          }}
+        >
+          {NAME_CHARS.map((char, i) => (
+            <motion.span
+              key={i}
+              variants={charVariants}
+              style={{
+                ...heroNameGradient,
+                whiteSpace: char === ' ' ? 'pre' : 'normal',
+                minWidth: char === ' ' ? '0.35em' : undefined,
+              }}
             >
-                <CanvasErrorBoundary>
-                    <Canvas camera={{ position: [0, 0, 5], fov: 55 }} shadows>
-                        {/* Dark ambient — low intensity keeps the scene moody */}
-                        <ambientLight color={COLORS.slate300} intensity={0.5} />
-                        {/* Hemisphere: deep violet sky / near-black ground */}
-                        <hemisphereLight args={[COLORS.violetSky, COLORS.surface, 0.6]} />
-                        {/* Key light: soft violet from upper-left */}
-                        <directionalLight position={[-4, 6, 4]} color={COLORS.violet} intensity={2.0} castShadow />
-                        {/* Indigo rim from the left */}
-                        <pointLight position={[-4, 2, 4]} color={COLORS.indigo} intensity={5} />
-                        {/* Cyan accent from lower-right for contrast */}
-                        <pointLight position={[4, -3, 2]} color={COLORS.cyan} intensity={1.5} />
-                        <Suspense fallback={<ModelFallback />}>
-                            <AstronautModel />
-                        </Suspense>
-                        <EffectComposer>
-                            <Bloom intensity={0.5} luminanceThreshold={0.3} luminanceSmoothing={0.9} mipmapBlur />
-                        </EffectComposer>
-                    </Canvas>
-                </CanvasErrorBoundary>
-            </motion.div>
-        </section>
-    )
+              {char}
+            </motion.span>
+          ))}
+        </motion.div>
+
+        {/* Subtitle */}
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.9 }}
+          style={{
+            fontSize: 'clamp(1rem, 2.5vw, 1.25rem)',
+            color: COLORS.textSub,
+            lineHeight: 1.6,
+            marginBottom: '16px',
+            maxWidth: '520px',
+          }}
+        >
+          Senior Mobile Engineer · React Native · Interactive 3D
+        </motion.p>
+
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 1.0 }}
+          style={{
+            fontSize: '0.95rem',
+            color: COLORS.textMuted,
+            lineHeight: 1.6,
+            marginBottom: '40px',
+            maxWidth: '480px',
+          }}
+        >
+          7+ years architecting mobile experiences. Former game dev with a passion for performance,
+          real-time systems, and polished interactive UIs.
+        </motion.p>
+
+        {/* CTAs */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 1.1 }}
+          style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: '48px' }}
+        >
+          <button
+            className="btn-primary"
+            onClick={() =>
+              document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' })
+            }
+          >
+            View Projects <FiArrowDown size={16} />
+          </button>
+          <a href="mailto:vitorhaueisen@gmail.com" className="btn-secondary">
+            Get in Touch
+          </a>
+        </motion.div>
+
+        {/* Social */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 1.3 }}
+          style={{ display: 'flex', gap: '20px', alignItems: 'center' }}
+        >
+          <SocialIconLink
+            href="https://github.com/vhaueisen"
+            label="GitHub profile"
+            icon={<FiGithub size={22} />}
+            hoverColor={COLORS.textPrimary}
+          />
+          <SocialIconLink
+            href="https://linkedin.com/in/vitor-ruas"
+            label="LinkedIn profile"
+            icon={<FiLinkedin size={22} />}
+            hoverColor={COLORS.indigo}
+          />
+          <span style={{ color: COLORS.slate800, fontSize: '0.75rem', marginLeft: '4px' }} />
+        </motion.div>
+      </div>
+
+      {/* Right: 3D canvas — absolutely fills the right half, sits behind text */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1, delay: 0.5, ease: 'easeOut' }}
+        style={{
+          position: 'absolute',
+          right: 40,
+          top: 40,
+          width: 'calc(50% - 40px)',
+          height: 'calc(100% - 80px)',
+          display: 'none',
+          zIndex: 1,
+          pointerEvents: 'none',
+        }}
+        className="hero-canvas-wrapper"
+      >
+        <CanvasErrorBoundary>
+          <Canvas camera={{ position: [0, 0, 5], fov: 55 }} shadows>
+            {/* Dark ambient — low intensity keeps the scene moody */}
+            <ambientLight color={COLORS.slate300} intensity={0.5} />
+            {/* Hemisphere: deep violet sky / near-black ground */}
+            <hemisphereLight args={[COLORS.violetSky, COLORS.surface, 0.6]} />
+            {/* Key light: soft violet from upper-left */}
+            <directionalLight
+              position={[-4, 6, 4]}
+              color={COLORS.violet}
+              intensity={2.0}
+              castShadow
+            />
+            {/* Indigo rim from the left */}
+            <pointLight position={[-4, 2, 4]} color={COLORS.indigo} intensity={5} />
+            {/* Cyan accent from lower-right for contrast */}
+            <pointLight position={[4, -3, 2]} color={COLORS.cyan} intensity={1.5} />
+            <Suspense fallback={<ModelFallback />}>
+              <AstronautModel />
+            </Suspense>
+            <EffectComposer>
+              <Bloom intensity={0.5} luminanceThreshold={0.3} luminanceSmoothing={0.9} mipmapBlur />
+            </EffectComposer>
+          </Canvas>
+        </CanvasErrorBoundary>
+      </motion.div>
+    </section>
+  )
 }
