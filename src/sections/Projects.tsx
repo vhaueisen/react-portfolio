@@ -108,7 +108,7 @@ interface ProjectCardProps {
 
 function ProjectCard({ project, index }: ProjectCardProps) {
     const [hovered, setHovered] = useState(false)
-    const liveUrl = project.link ?? project.playStore ?? project.appStore
+    const liveUrl = project.link ?? project.appStore ?? project.playStore
 
     return (
         <motion.div
