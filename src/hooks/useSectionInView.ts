@@ -14,7 +14,7 @@ type InViewMargin = NonNullable<Parameters<typeof useInView>[1]>['margin']
  * ```
  */
 export function useSectionInView<T extends Element = HTMLDivElement>(margin = '-80px') {
-    const ref = useRef<T>(null)
-    const inView = useInView(ref, { once: true, margin: margin as InViewMargin })
-    return [ref, inView] as const
+  const ref = useRef<T>(null)
+  const inView = useInView(ref, { once: true, margin: margin as InViewMargin })
+  return [ref, inView] as const
 }

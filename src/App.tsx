@@ -9,32 +9,32 @@ import Projects from './sections/Projects'
 import Skills from './sections/Skills'
 
 function App() {
-    return (
-        <>
-            {/* Fixed 3D starfield background — z-index: 0 */}
-            <CanvasErrorBoundary>
-                <SpaceBackground />
-            </CanvasErrorBoundary>
+  return (
+    <>
+      {/* Fixed 3D starfield background — z-index: 0 */}
+      <CanvasErrorBoundary>
+        <SpaceBackground />
+      </CanvasErrorBoundary>
 
-            {/* Fixed navigation — z-index: 100 */}
-            <Navbar />
+      {/* Fixed navigation — z-index: 100 */}
+      <Navbar />
 
-            {/* Scrollable content — z-index: 10 */}
-            <main
-                style={{
-                    position: 'relative',
-                    zIndex: 10,
-                }}
-            >
-                <Hero />
-                <About />
-                <Experience />
-                <Projects />
-                <Skills />
-                <Contact />
-            </main>
-        </>
-    )
+      {/* Scrollable content — z-index: 10 */}
+      <main
+        style={{
+          position: 'relative',
+          zIndex: 10,
+        }}
+      >
+        <Hero />
+        <About />
+        <Experience />
+        <Projects />
+        <Skills />
+        <Contact />
+      </main>
+    </>
+  )
 }
 
 export default App

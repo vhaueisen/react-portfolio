@@ -7,7 +7,7 @@ const rootElement = document.getElementById('root')
 if (!rootElement) throw new Error('Root element #root not found in DOM')
 
 createRoot(rootElement).render(
-    <StrictMode>
-        <App />
-    </StrictMode>
+  <StrictMode>
+    <App />
+  </StrictMode>
 )

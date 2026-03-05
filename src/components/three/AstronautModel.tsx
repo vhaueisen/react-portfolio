@@ -14,30 +14,30 @@ useGLTF.preload(ASTRONAUT_URL)
  * a slow Y-axis rotation. Wrapped in a `<Float>` for a gentle hover effect.
  */
 export function AstronautModel() {
-    const groupRef = useRef<THREE.Group | null>(null)
-    const { scene, animations } = useGLTF(ASTRONAUT_URL)
-    const { actions } = useAnimations(animations, groupRef)
+  const groupRef = useRef<THREE.Group | null>(null)
+  const { scene, animations } = useGLTF(ASTRONAUT_URL)
+  const { actions } = useAnimations(animations, groupRef)
 
-    useEffect(() => {
-        const firstClip = animations[0]?.name
-        if (firstClip && actions[firstClip] && !actions[firstClip].isRunning()) {
-            actions[firstClip].play()
-        }
-    }, [actions, animations])
+  useEffect(() => {
+    const firstClip = animations[0]?.name
+    if (firstClip && actions[firstClip] && !actions[firstClip].isRunning()) {
+      actions[firstClip].play()
+    }
+  }, [actions, animations])
 
-    useFrame((_, delta) => {
-        if (groupRef.current) groupRef.current.rotation.y += delta * 0.25
-    })
+  useFrame((_, delta) => {
+    if (groupRef.current) groupRef.current.rotation.y += delta * 0.25
+  })
 
-    return (
-        <Float speed={1.2} rotationIntensity={0.15} floatIntensity={0.4}>
-            <group rotation={[-0.25, 0, -0.3]}>
-                <group ref={groupRef} scale={2.2} position={[0, -2, 0]}>
-                    <primitive object={scene} />
-                </group>
-            </group>
-        </Float>
-    )
+  return (
+    <Float speed={1.2} rotationIntensity={0.15} floatIntensity={0.4}>
+      <group rotation={[-0.25, 0, -0.3]}>
+        <group ref={groupRef} scale={2.2} position={[0, -2, 0]}>
+          <primitive object={scene} />
+        </group>
+      </group>
+    </Float>
+  )
 }
 
 /**
@@ -45,19 +45,25 @@ export function AstronautModel() {
  * A simple rotating wireframe octahedron keeps the canvas active.
  */
 export function ModelFallback() {
-    const meshRef = useRef<THREE.Mesh | null>(null)
+  const meshRef = useRef<THREE.Mesh | null>(null)
 
-    const geometry = useMemo(() => new THREE.OctahedronGeometry(1, 0), [])
-    const material = useMemo(
-        () => new THREE.MeshStandardMaterial({ color: COLORS.indigo, wireframe: true }),
-        []
-    )
+  const geometry = useMemo(() => new THREE.OctahedronGeometry(1, 0), [])
+  const material = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: COLORS.indigo, wireframe: true }),
+    []
+  )
 
-    useEffect(() => () => { geometry.dispose(); material.dispose() }, [geometry, material])
+  useEffect(
+    () => () => {
+      geometry.dispose()
+      material.dispose()
+    },
+    [geometry, material]
+  )
 
-    useFrame((_, delta) => {
-        if (meshRef.current) meshRef.current.rotation.y += delta * 0.6
-    })
+  useFrame((_, delta) => {
+    if (meshRef.current) meshRef.current.rotation.y += delta * 0.6
+  })
 
-    return <mesh ref={meshRef} geometry={geometry} material={material} />
+  return <mesh ref={meshRef} geometry={geometry} material={material} />
 }
